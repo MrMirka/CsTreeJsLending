@@ -38,7 +38,8 @@ scene.add(camera)
 
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
-    antialias: true
+    antialias: true,
+    alpha: true
 })
 
 //const controls = new OrbitControls(camera, canvas)
@@ -83,12 +84,12 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping
  scene.add( light );
 
  //Point   
- const pontLight = new THREE.PointLight( 0xffffff, 0.86 )
- pontLight.position.set(-4,4,-4)
+ const pontLight = new THREE.PointLight( 0xD03858, 4 )
+ pontLight.position.set(-0.6,4,-2.7)
  pontLight.decay = 2
  
  //pontLight.castShadow = true
- pontLight.position.set(2.4,4,-2.7)
+ 
  scene.add( pontLight )
 
  const pontLight1 = new THREE.PointLight( 0xffffff, 2.46 )
