@@ -6216,6 +6216,9 @@
 				"baseColorTexture":{
 					"index":12
 				}
+			},
+			"normalTexture":{
+				"index":13
 			}
 		}
 	],
@@ -6264,6 +6267,9 @@
 		},
 		{
 			"source":12
+		},
+		{
+			"source":13
 		}
 	],
 	"images":[
@@ -6318,6 +6324,10 @@
 		{
 			"uri":"torso_texture_2k.jpg",
 			"mimeType":"image/jpeg"
+		},
+		{
+			"uri":"ctm_fbi_v2_body_variantB_normal.png",
+			"mimeType":"image/png"
 		}
 	],
 	"scene":0

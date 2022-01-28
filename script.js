@@ -30,7 +30,7 @@ const param = {
 const camera = new THREE.PerspectiveCamera(55, param.width / param.height, 0.1 , 1000)
 camera.position.x = -2.1
 camera.position.z = 2.4
-camera.position.y = 3.3
+camera.position.y = 3.9
 gui.add(camera.position,'x', -10, 10, 0.3)
 gui.add(camera.position,'y', -10, 10, 0.3)
 gui.add(camera.position,'z', -10, 10, 0.3)
@@ -154,9 +154,9 @@ const rectLightHelper = new RectAreaLightHelper( rectLight );
  const gltfLoaderSol = new GLTFLoader()
  gltfLoaderSol.load('./models/gltf1k/character.gltf', gltf => {
     model = gltf.scene
-    model.scale.set(2.5,2.5,2.5)
+    model.scale.set(2.9,2.9,2.9)
     model.position.set(0,0,0)
-    console.log(gltf)
+    model.rotation.y = -.32
     gltf.scene.traverse( function( node ) {
         if(node.material){
         /* const rgbeLoader = new RGBELoader()
@@ -200,7 +200,7 @@ document.body.appendChild( stats.dom );
 
 const tick = () => {
     rectLight.lookAt( 0, 3, 0 );
-    camera.lookAt( 0, 3, 0 );
+    camera.lookAt( 0, 4, 1.2 );
     const elapsedTime = clock.getDelta()
 
 
