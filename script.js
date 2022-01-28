@@ -28,9 +28,12 @@ const param = {
 }
 
 const camera = new THREE.PerspectiveCamera(55, param.width / param.height, 0.1 , 1000)
-camera.position.x = 3
-camera.position.z = 3
-camera.position.y = 4
+camera.position.x = -2.1
+camera.position.z = 2.4
+camera.position.y = 3.3
+gui.add(camera.position,'x', -10, 10, 0.3)
+gui.add(camera.position,'y', -10, 10, 0.3)
+gui.add(camera.position,'z', -10, 10, 0.3)
 scene.add(camera)
 
 const renderer = new THREE.WebGLRenderer({
@@ -38,7 +41,7 @@ const renderer = new THREE.WebGLRenderer({
     antialias: true
 })
 
-const controls = new OrbitControls(camera, canvas)
+//const controls = new OrbitControls(camera, canvas)
 
 renderer.setSize(param.width, param.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
@@ -196,6 +199,7 @@ document.body.appendChild( stats.dom );
 
 const tick = () => {
     rectLight.lookAt( 0, 3, 0 );
+    camera.lookAt( 0, 3, 0 );
     const elapsedTime = clock.getDelta()
 
 
@@ -203,7 +207,7 @@ const tick = () => {
 		mixer.update( elapsedTime );
 	}
 
-    controls.update()
+    //controls.update()
     stats.update()
         
     renderer.render(scene, camera)
