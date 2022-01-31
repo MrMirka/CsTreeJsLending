@@ -2444,10 +2444,6 @@
         },
         {
             "sampler" : 0,
-            "source" : 2
-        },
-        {
-            "sampler" : 0,
             "source" : 5
         },
         {
@@ -2469,6 +2465,10 @@
         {
             "sampler" : 0,
             "source" : 10
+        },
+        {
+            "sampler" : 0,
+            "source" : 11
         }
     ],
     "images" : [
@@ -2496,6 +2496,11 @@
             "mimeType" : "image/jpeg",
             "name" : "lambert4_baseColor",
             "uri" : "lambert4_baseColor.jpg"
+        },
+        {
+            "mimeType" : "image/jpeg",
+            "name" : "material_baseColor",
+            "uri" : "material_baseColor.jpg"
         },
         {
             "mimeType" : "image/jpeg",
