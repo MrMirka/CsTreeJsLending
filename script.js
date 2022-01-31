@@ -152,7 +152,7 @@ const rectLightHelper = new RectAreaLightHelper( rectLight );
   */
 
  const gltfLoaderSol = new GLTFLoader()
- gltfLoaderSol.load('./models/compress_v1/export/untitled.gltf', gltf => {
+ gltfLoaderSol.load('./models/character/untitled.gltf', gltf => {
  //gltfLoaderSol.load('./models/gltf1k/character.gltf', gltf => {
     model = gltf.scene
     model.scale.set(2.9,2.9,2.9)
