@@ -2229,12 +2229,9 @@
         },
         {
             "name" : "gun",
-            "normalTexture" : {
-                "index" : 2
-            },
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
-                    "index" : 3
+                    "index" : 2
                 },
                 "metallicFactor" : 0,
                 "roughnessFactor" : 0.30000001192092896
@@ -2243,8 +2240,18 @@
         {
             "name" : "gun_lam4",
             "normalTexture" : {
-                "index" : 4
+                "index" : 3
             },
+            "pbrMetallicRoughness" : {
+                "baseColorTexture" : {
+                    "index" : 4
+                },
+                "metallicFactor" : 0,
+                "roughnessFactor" : 0.30000001192092896
+            }
+        },
+        {
+            "name" : "gun_base",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
                     "index" : 5
@@ -2254,23 +2261,10 @@
             }
         },
         {
-            "name" : "gun_base",
-            "normalTexture" : {
-                "index" : 6
-            },
-            "pbrMetallicRoughness" : {
-                "baseColorTexture" : {
-                    "index" : 7
-                },
-                "metallicFactor" : 0,
-                "roughnessFactor" : 0.30000001192092896
-            }
-        },
-        {
             "name" : "radio",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
-                    "index" : 8
+                    "index" : 6
                 },
                 "metallicFactor" : 0,
                 "roughnessFactor" : 0.9309999942779541
@@ -2280,7 +2274,7 @@
             "name" : "glovers",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
-                    "index" : 9
+                    "index" : 7
                 },
                 "metallicFactor" : 0,
                 "roughnessFactor" : 0.8450000286102295
@@ -2289,11 +2283,11 @@
         {
             "name" : "head_vb",
             "normalTexture" : {
-                "index" : 10
+                "index" : 8
             },
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
-                    "index" : 11
+                    "index" : 9
                 },
                 "metallicFactor" : 0,
                 "roughnessFactor" : 0.828000009059906
@@ -2301,9 +2295,12 @@
         },
         {
             "name" : "body",
+            "normalTexture" : {
+                "index" : 10
+            },
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
-                    "index" : 12
+                    "index" : 11
                 },
                 "metallicFactor" : 0,
                 "roughnessFactor" : 0.8199999928474426
@@ -2443,11 +2440,11 @@
         },
         {
             "sampler" : 0,
-            "source" : 2
+            "source" : 4
         },
         {
             "sampler" : 0,
-            "source" : 4
+            "source" : 2
         },
         {
             "sampler" : 0,
@@ -2472,10 +2469,6 @@
         {
             "sampler" : 0,
             "source" : 10
-        },
-        {
-            "sampler" : 0,
-            "source" : 11
         }
     ],
     "images" : [
@@ -2491,28 +2484,18 @@
         },
         {
             "mimeType" : "image/jpeg",
-            "name" : "lambert4_normal",
-            "uri" : "lambert4_normal.jpg"
-        },
-        {
-            "mimeType" : "image/jpeg",
             "name" : "Body1_baseColor",
             "uri" : "Body1_baseColor.jpg"
         },
         {
             "mimeType" : "image/jpeg",
+            "name" : "lambert4_normal",
+            "uri" : "lambert4_normal.jpg"
+        },
+        {
+            "mimeType" : "image/jpeg",
             "name" : "lambert4_baseColor",
             "uri" : "lambert4_baseColor.jpg"
-        },
-        {
-            "mimeType" : "image/jpeg",
-            "name" : "material_normal",
-            "uri" : "material_normal.jpg"
-        },
-        {
-            "mimeType" : "image/jpeg",
-            "name" : "material_baseColor",
-            "uri" : "material_baseColor.jpg"
         },
         {
             "mimeType" : "image/jpeg",
@@ -2533,6 +2516,11 @@
             "mimeType" : "image/jpeg",
             "name" : "head_albedo_1k",
             "uri" : "head_albedo_1k.jpg"
+        },
+        {
+            "mimeType" : "image/png",
+            "name" : "torso_normal",
+            "uri" : "torso_normal.png"
         },
         {
             "mimeType" : "image/jpeg",
