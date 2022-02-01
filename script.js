@@ -22,9 +22,7 @@ const canvas = document.querySelector('canvas.webgl')
 
 
 const scene = new THREE.Scene()
-//scene.background = new THREE.Color(0xBADAED)
-//scene.fog = new THREE.FogExp2(0x9FACB4, 0.03)
-//scene.fog = new THREE.Fog(0x868686, 3, 10)
+
 
 const param = {
     width: window.innerWidth,
@@ -38,8 +36,6 @@ window.addEventListener('mousemove', (event) =>
 })
 
 const camera = new THREE.PerspectiveCamera(55, param.width / param.height, 0.1 , 1000)
-//camera.position.x = -2.1
-//camera.position.z = 2.4
 camera.position.x = Math.sin(cursor.x * Math.PI * 0.012) * 11.8
 camera.position.z = Math.cos(cursor.x * Math.PI * 0.02) * 3.2
 camera.position.y = 3.9
@@ -54,17 +50,13 @@ const renderer = new THREE.WebGLRenderer({
     alpha: true
 })
 
-const controls = new OrbitControls(camera, canvas)
+//const controls = new OrbitControls(camera, canvas)
 
 renderer.setSize(param.width, param.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 renderer.shadowMap.enabled = true
-//renderer.shadowMap.needsUpdate = true
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
 renderer.toneMapping = THREE.ACESFilmicToneMapping
-//renderer.toneMappingExposure = 1;
-//renderer.outputEncoding = THREE.sRGBEncoding;
-
 
 
 /**
@@ -129,12 +121,12 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping
 
 
 
-const sphereSize = 0.3;
+/* const sphereSize = 0.3;
 const pointLightHelper = new THREE.PointLightHelper( pontLight, sphereSize );
 scene.add( pointLightHelper );
 
 const pointLightHelper1 = new THREE.PointLightHelper( pontLight1, sphereSize );
-scene.add( pointLightHelper1 );
+scene.add( pointLightHelper1 ); */
 
 //RECT Ligth
 const width = 4;
@@ -173,26 +165,11 @@ const rectLightHelper = new RectAreaLightHelper( rectLight );
     model.rotation.y = .38
     gltf.scene.traverse( function( node ) {
         if(node.material){
-        /* const rgbeLoader = new RGBELoader()
-        rgbeLoader.load('/textures/enviroment/studio_garden_2k.pic', texture => {
-        txt = texture    
-        txt.mapping = THREE.EquirectangularRefractionMapping;
-        txt.wrapS = THREE.RepeatWrapping;
-        txt.wrapP = THREE.RepeatWrapping;
-        txt.repeat.set( 1, 1 );
-        node.material.envMapIntensity = 11.5;
-        node.material.envMap = txt;
-        gui.add(node.material.envMap,'rotation', -10, 10, 0.3)
-
-        
-
-    }) */
+            //edit material
         }
         if(node.isMesh) {
             node.castShadow = true;
             node.receiveShadow = true;
-            //gui.add(node,'receiveShadow')
-            //gui.add(node,'castShadow')
         }
     })
 

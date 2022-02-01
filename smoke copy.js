@@ -1,9 +1,7 @@
 
 var particles = [];
-var sparks = [];
 
 var particleCount = 30;
-var sparksCount = 20;
 
 var maxVelocity = 2.4;
 
@@ -13,7 +11,6 @@ var canvasWidth = window.innerWidth;
 var canvasHeight = window.innerHeight;
 
 
-//Load smoke content
 var imageObj = new Image();
 imageObj.onload = function() {
     particles.forEach(function(particle) {
@@ -22,16 +19,6 @@ imageObj.onload = function() {
 };
 
 imageObj.src = "./img/smoke.png";
-
-//Load spark content
-var sparkObj = new Image();
-sparkObj.onload = function() {
-    sparks.forEach(function(particle) {
-            particle.setImage(sparkObj);
-    });
-};
-
-sparkObj.src = "./img/spark.png";
 
 function Particle(context) {
 
@@ -106,6 +93,7 @@ var context;
 
 function init() {
     var canvas = document.getElementById('myCanvas');
+    console.log(canvas)
     canvas.width = canvasWidth
     canvas.height = canvasHeight
     if (canvas.getContext) {
@@ -119,14 +107,6 @@ function init() {
             
             particle.setVelocity(generateRandom(-maxVelocity, maxVelocity), generateRandom(-maxVelocity, maxVelocity));
             particles.push(particle);            
-        }
-        for(var i=0; i < sparksCount; ++i){
-            var particle = new Particle(context);
-            
-            particle.setPosition(generateRandom(0, canvasWidth), generateRandom(0, canvasHeight));
-            
-            particle.setVelocity(generateRandom(-maxVelocity, maxVelocity), generateRandom(-maxVelocity, maxVelocity));
-            sparks.push(particle);            
         }
     }
     else {
@@ -143,18 +123,12 @@ function draw() {
         particles.forEach(function(particle) {
             particle.draw();
         });
-        sparks.forEach(function(particle) {
-            particle.draw();
-        });
     };
-    im.src = "./img/clean_ui.png";
+    im.src = "./img/ui.png";
 }
 
 function update() {
     particles.forEach(function(particle) {
-        particle.update();
-    });
-    sparks.forEach(function(particle) {
         particle.update();
     });
 }
