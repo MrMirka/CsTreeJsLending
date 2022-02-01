@@ -15,6 +15,8 @@ const cursor = {
     y: 0
 }
 
+
+
 const gui = new dat.GUI()
 
 
@@ -22,6 +24,8 @@ const canvas = document.querySelector('canvas.webgl')
 
 
 const scene = new THREE.Scene()
+let cameraRig = new THREE.Group()
+scene.add(cameraRig)
 
 
 const param = {
@@ -36,9 +40,12 @@ window.addEventListener('mousemove', (event) =>
 })
 
 const camera = new THREE.PerspectiveCamera(55, param.width / param.height, 0.1 , 1000)
-camera.position.x = Math.sin(cursor.x * Math.PI * 0.012) * 11.8
-camera.position.z = Math.cos(cursor.x * Math.PI * 0.02) * 3.2
-camera.position.y = 3.9
+/* camera.position.x = Math.sin(cursor.x * Math.PI * 0.012) * 11.8
+camera.position.z = Math.cos(cursor.x * Math.PI * 0.02) * 3.2 */
+camera.position.x = 1
+camera.position.z = 3
+camera.position.y = 4
+
 gui.add(camera.position,'x', -10, 10, 0.3)
 gui.add(camera.position,'y', -10, 10, 0.3)
 gui.add(camera.position,'z', -10, 10, 0.3)
@@ -161,8 +168,10 @@ const rectLightHelper = new RectAreaLightHelper( rectLight );
     model = gltf.scene
     model.scale.set(2.9,2.9,2.9)
     model.position.set(0,0,0)
-    //model.rotation.y = -.32
-    model.rotation.y = .38
+    //model.rotation.y = .38
+    model.rotation.y = .6
+    cameraRig.add(model)
+    cameraRig.add(camera)
     gltf.scene.traverse( function( node ) {
         if(node.material){
             //edit material
@@ -194,9 +203,13 @@ const tick = () => {
     
     const elapsedTime = clock.getDelta()
 
-    camera.position.x = Math.sin(cursor.x * Math.PI * 0.012) * 11.8
+   /*  camera.position.x = Math.sin(cursor.x * Math.PI * 0.012) * 11.8
     camera.position.z = Math.cos(cursor.x * Math.PI * 0.02) * 3.2
-    camera.lookAt( 0.63, 4, 1.2 );
+    camera.position.y = cursor.y * 0.15 + 3.9 */
+    //camera.lookAt( 0.63, 4, 1.2 );
+    //camera.lookAt(0, 4 ,0);
+   
+    cameraRig.rotation.y = cursor.x * Math.PI * 0.1 - 0.25
 
 
     if(mixer) {
