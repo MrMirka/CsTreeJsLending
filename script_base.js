@@ -10,10 +10,6 @@ import { RectAreaLightHelper } from './lib/RectAreaLightHelper.js';
 
 let mixer, model
 
-const cursor = {
-    x: 0,
-    y: 0
-}
 
 const gui = new dat.GUI()
 
@@ -31,17 +27,9 @@ const param = {
     height: window.innerHeight
 }
 
-window.addEventListener('mousemove', (event) =>
-{
-    cursor.x = event.clientX / param.width - 0.5
-    cursor.y = - (event.clientY / param.height - 0.5)
-})
-
 const camera = new THREE.PerspectiveCamera(55, param.width / param.height, 0.1 , 1000)
-//camera.position.x = -2.1
-//camera.position.z = 2.4
-camera.position.x = Math.sin(cursor.x * Math.PI * 0.012) * 11.8
-camera.position.z = Math.cos(cursor.x * Math.PI * 0.02) * 3.2
+camera.position.x = -2.1
+camera.position.z = 2.4
 camera.position.y = 3.9
 gui.add(camera.position,'x', -10, 10, 0.3)
 gui.add(camera.position,'y', -10, 10, 0.3)
@@ -97,7 +85,7 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping
 
  //Point   
  const pontLight = new THREE.PointLight( 0xD03858, 4 )
- pontLight.position.set(-1.8,3.9,-1.2)
+ pontLight.position.set(-0.6,4,-2.7)
  pontLight.decay = 2
  
  //pontLight.castShadow = true
@@ -106,7 +94,7 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping
 
  const pontLight1 = new THREE.PointLight( 0xffffff, 2.46 )
  pontLight1.position.set(-4,4,-4)
- pontLight1.position.set(-2.1,3.9,1.5)
+ pontLight1.position.set(-2.1,3.9,0)
  pontLight1.castShadow = true
  pontLight1.distance = 1011
  pontLight1.bias = 222
@@ -169,8 +157,7 @@ const rectLightHelper = new RectAreaLightHelper( rectLight );
     model = gltf.scene
     model.scale.set(2.9,2.9,2.9)
     model.position.set(0,0,0)
-    //model.rotation.y = -.32
-    model.rotation.y = .38
+    model.rotation.y = -.32
     gltf.scene.traverse( function( node ) {
         if(node.material){
         /* const rgbeLoader = new RGBELoader()
@@ -214,12 +201,8 @@ document.body.appendChild( stats.dom );
 
 const tick = () => {
     rectLight.lookAt( 0, 3, 0 );
-    
+    camera.lookAt( 0, 4, 1.2 );
     const elapsedTime = clock.getDelta()
-
-    camera.position.x = Math.sin(cursor.x * Math.PI * 0.012) * 11.8
-    camera.position.z = Math.cos(cursor.x * Math.PI * 0.02) * 3.2
-    camera.lookAt( 0.63, 4, 1.2 );
 
 
     if(mixer) {

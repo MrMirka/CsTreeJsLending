@@ -8,7 +8,7 @@ html,
 body
 {
     overflow: hidden;
-    /* background-image: url('./img/ui.png'); */
+    background-image: url('./img/ui.png');
 }
 
 .webgl
