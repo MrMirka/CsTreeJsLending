@@ -20,12 +20,17 @@ const cursor = {
 const gui = new dat.GUI()
 
 
+
+
 const canvas = document.querySelector('canvas.webgl')
 
 
 const scene = new THREE.Scene()
 let cameraRig = new THREE.Group()
 scene.add(cameraRig)
+
+/* const axesHelper = new THREE.AxesHelper( 5 );
+scene.add( axesHelper ); */
 
 
 const param = {
@@ -34,7 +39,8 @@ const param = {
 }
 
 window.addEventListener('mousemove', (event) =>
-{
+{   
+
     cursor.x = event.clientX / param.width - 0.5
     cursor.y = - (event.clientY / param.height - 0.5)
 })
@@ -44,7 +50,7 @@ const camera = new THREE.PerspectiveCamera(55, param.width / param.height, 0.1 ,
 camera.position.z = Math.cos(cursor.x * Math.PI * 0.02) * 3.2 */
 camera.position.x = 1
 camera.position.z = 3
-camera.position.y = 4
+camera.position.y = 1
 
 gui.add(camera.position,'x', -10, 10, 0.3)
 gui.add(camera.position,'y', -10, 10, 0.3)
@@ -89,23 +95,19 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping
 /**
  * Ligth
  */
-
  const light = new THREE.AmbientLight( 0x404040 ); // soft white light
  light.intensity = 5
  scene.add( light );
 
  //Point   
  const pontLight = new THREE.PointLight( 0xD03858, 4 )
- pontLight.position.set(-1.8,3.9,-1.2)
+ pontLight.position.set(-1.8,.9,-1.2)
  pontLight.decay = 2
- 
- //pontLight.castShadow = true
  
  scene.add( pontLight )
 
  const pontLight1 = new THREE.PointLight( 0xffffff, 2.46 )
- pontLight1.position.set(-4,4,-4)
- pontLight1.position.set(-2.1,3.9,1.5)
+ pontLight1.position.set(-2.1,.9,1.5)
  pontLight1.castShadow = true
  pontLight1.distance = 1011
  pontLight1.bias = 222
@@ -164,11 +166,9 @@ const rectLightHelper = new RectAreaLightHelper( rectLight );
 
  const gltfLoaderSol = new GLTFLoader()
  gltfLoaderSol.load('./models/character/untitled.gltf', gltf => {
- //gltfLoaderSol.load('./models/gltf1k/character.gltf', gltf => {
     model = gltf.scene
     model.scale.set(2.9,2.9,2.9)
-    model.position.set(0,0,0)
-    //model.rotation.y = .38
+    model.position.set(0,-3,0)
     model.rotation.y = .6
     cameraRig.add(model)
     cameraRig.add(camera)
@@ -208,9 +208,11 @@ const tick = () => {
     camera.position.y = cursor.y * 0.15 + 3.9 */
     //camera.lookAt( 0.63, 4, 1.2 );
     //camera.lookAt(0, 4 ,0);
-   
-    cameraRig.rotation.y = cursor.x * Math.PI * 0.1 - 0.25
-
+    let delta = -(cursor.x - cameraRig.rotation.y) * .5 * Math.PI * 0.1 - 0.25
+    console.log()
+    cameraRig.rotation.y = delta 
+    cameraRig.rotation.x = cursor.y * 0.2 
+    
 
     if(mixer) {
 		mixer.update( elapsedTime );
