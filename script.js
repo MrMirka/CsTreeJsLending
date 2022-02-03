@@ -2,11 +2,11 @@ import * as THREE from './three/build/three.module.js'
 import { OrbitControls } from './three/examples/jsm/controls/OrbitControls.js'
 import { FirstPersonControls} from './three/examples/jsm/controls/FirstPersonControls.js'
 import { GLTFLoader } from './three/examples/jsm/loaders/GLTFLoader.js'
+import { DRACOLoader } from './three/examples/jsm/loaders/DRACOLoader.js'
 import { RGBELoader } from './three/examples/jsm/loaders/RGBELoader.js'
 import Stats  from './three/examples/jsm/libs/stats.module.js'
 import * as dat from './lib/dat.gui.module.js'
 import { RectAreaLightHelper } from './lib/RectAreaLightHelper.js';
-
 
 
 let mixer, model
@@ -16,12 +16,7 @@ const cursor = {
     y: 0
 }
 
-
-
 const gui = new dat.GUI()
-
-
-
 
 const canvas = document.querySelector('canvas.webgl')
 
@@ -29,10 +24,6 @@ const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 let cameraRig = new THREE.Group()
 scene.add(cameraRig)
-
-/* const axesHelper = new THREE.AxesHelper( 5 );
-scene.add( axesHelper ); */
-
 
 const param = {
     width: window.innerWidth,
@@ -159,11 +150,13 @@ const rectLightHelper = new RectAreaLightHelper( rectLight );
 
 
  /**
-  * GLTF loader - Character model
+  * Model loader - Character model
   */
-
- const gltfLoaderSol = new GLTFLoader()
- gltfLoaderSol.load('./models/character/character.gltf', gltf => {
+const dracoLoader = new DRACOLoader()
+dracoLoader.setDecoderPath('./lib/draco/')
+const gltfLoaderSol = new GLTFLoader()
+gltfLoaderSol.setDRACOLoader(dracoLoader)
+gltfLoaderSol.load('./models/compress_vertion/character.gltf', gltf => {
     model = gltf.scene
     model.scale.set(2.9,2.9,2.9)
     model.position.set(0,-3,0)
