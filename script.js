@@ -1,5 +1,6 @@
 import * as THREE from './three/build/three.module.js'
 import { OrbitControls } from './three/examples/jsm/controls/OrbitControls.js'
+import { FirstPersonControls} from './three/examples/jsm/controls/FirstPersonControls.js'
 import { GLTFLoader } from './three/examples/jsm/loaders/GLTFLoader.js'
 import { RGBELoader } from './three/examples/jsm/loaders/RGBELoader.js'
 import Stats  from './three/examples/jsm/libs/stats.module.js'
@@ -41,13 +42,14 @@ const param = {
 window.addEventListener('mousemove', (event) =>
 {   
 
-    cursor.x = event.clientX / param.width - 0.5
-    cursor.y = - (event.clientY / param.height - 0.5)
+  /*   cursor.x = event.clientX / param.width - 0.5
+    cursor.y = - (event.clientY / param.height - 0.5) */
+
+    cursor.x = ( event.clientX - param.width / 2 ) * 0.0004
+    cursor.y = ( event.clientY - param.height / 2 ) * 0.0004
 })
 
 const camera = new THREE.PerspectiveCamera(55, param.width / param.height, 0.1 , 1000)
-/* camera.position.x = Math.sin(cursor.x * Math.PI * 0.012) * 11.8
-camera.position.z = Math.cos(cursor.x * Math.PI * 0.02) * 3.2 */
 camera.position.x = 1
 camera.position.z = 3
 camera.position.y = 1
@@ -64,6 +66,7 @@ const renderer = new THREE.WebGLRenderer({
 })
 
 //const controls = new OrbitControls(camera, canvas)
+
 
 renderer.setSize(param.width, param.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
@@ -154,11 +157,6 @@ const rectLightHelper = new RectAreaLightHelper( rectLight );
 //rectLight.add( rectLightHelper );
  
 
- const directionalLight = new THREE.DirectionalLight( 0xffffff, 1 )
- directionalLight.castShadow = true;
- directionalLight.position.set(50,100,50)
- //scene.add( directionalLight )
-
 
  /**
   * GLTF loader - Character model
@@ -185,7 +183,6 @@ const rectLightHelper = new RectAreaLightHelper( rectLight );
     const animations = gltf.animations;
     mixer = new THREE.AnimationMixer( model );
     mixer.clipAction(animations[0]).play()
-    
     scene.add(model)
  })
 
@@ -202,16 +199,14 @@ const tick = () => {
     rectLight.lookAt( 0, 3, 0 );
     
     const elapsedTime = clock.getDelta()
+   
 
-   /*  camera.position.x = Math.sin(cursor.x * Math.PI * 0.012) * 11.8
-    camera.position.z = Math.cos(cursor.x * Math.PI * 0.02) * 3.2
-    camera.position.y = cursor.y * 0.15 + 3.9 */
-    //camera.lookAt( 0.63, 4, 1.2 );
-    //camera.lookAt(0, 4 ,0);
-    let delta = -(cursor.x - cameraRig.rotation.y) * .5 * Math.PI * 0.1 - 0.25
-    console.log()
+    /* let delta = -(cursor.x - cameraRig.rotation.y) * .5 * Math.PI * 0.1 - 0.25
     cameraRig.rotation.y = delta 
-    cameraRig.rotation.x = cursor.y * 0.2 
+    cameraRig.rotation.x = cursor.y * 0.2  */
+
+    cameraRig.rotation.x += ( -cursor.y - cameraRig.rotation.x ) * .05;
+	cameraRig.rotation.y += ( - cursor.x - cameraRig.rotation.y ) * .03;
     
 
     if(mixer) {
