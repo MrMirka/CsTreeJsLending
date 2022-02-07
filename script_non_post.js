@@ -8,19 +8,6 @@ import Stats  from './three/examples/jsm/libs/stats.module.js'
 import * as dat from './lib/dat.gui.module.js'
 import { RectAreaLightHelper } from './lib/RectAreaLightHelper.js';
 
-//Postprocessing
-import { EffectComposer } from './three/examples/jsm/postprocessing/EffectComposer.js'
-import { RenderPass } from './three/examples/jsm/postprocessing/RenderPass.js'
-import { ShaderPass } from './three/examples/jsm/postprocessing/ShaderPass.js'
-import { DotScreenPass } from './three/examples/jsm/postprocessing/DotScreenPass.js'
-import { SepiaShader } from './three/examples/jsm/shaders/SepiaShader.js'
-import { BleachBypassShader } from './three/examples/jsm/shaders/BleachBypassShader.js'
-import { FilmPass } from './three/examples/jsm/postprocessing/FilmPass.js'
-import { GammaCorrectionShader } from './three/examples/jsm/shaders/GammaCorrectionShader.js'
-import { LuminosityShader } from './three/examples/jsm/shaders/LuminosityShader.js';
-
-
-
 
 let mixer, model
 
@@ -48,6 +35,10 @@ const param = {
 
 window.addEventListener('mousemove', (event) =>
 {   
+
+  /*   cursor.x = event.clientX / param.width - 0.5
+    cursor.y = - (event.clientY / param.height - 0.5) */
+
     cursor.x = ( event.clientX - param.width / 2 ) * 0.0004
     cursor.y = ( event.clientY - param.height / 2 ) * 0.0004
 })
@@ -68,6 +59,7 @@ const renderer = new THREE.WebGLRenderer({
     alpha: true
 })
 
+//const controls = new OrbitControls(camera, canvas)
 
 
 renderer.setSize(param.width, param.height)
@@ -75,67 +67,6 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 renderer.shadowMap.enabled = true
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
 renderer.toneMapping = THREE.ACESFilmicToneMapping
-
-
-/**
- * Add compose
- */
-const compose = new EffectComposer(renderer)
-compose.addPass( new RenderPass( scene, camera ) )
-
-
-//Lumin
-//compose.addPass(new ShaderPass(LuminosityShader))
-
-
-//Dots
-const effectDotScreen = new DotScreenPass( new THREE.Vector2( 0, 0 ), 0.5, 0.8 )
-//compose.addPass(effectDotScreen)
-
-//Sepia
-const shaderSepia = SepiaShader
-const effectSepia = new ShaderPass( shaderSepia )
-effectSepia.uniforms[ 'amount' ].value = 0.9
-//compose.addPass(effectSepia)
-
-//Bleach
-const shaderBleach = BleachBypassShader
-const effectBleach = new ShaderPass( shaderBleach )
-effectBleach.uniforms[ 'opacity' ].value = 0.32
-//compose.addPass(effectBleach)
-
-//Gamma correction
-const effectGamma = new ShaderPass( GammaCorrectionShader )
-//compose.addPass(effectGamma)
-
-//Film
-const effectFilm = new FilmPass( 0.35, 0.025, 648, false )
-//compose.addPass(effectFilm)
-
-
-//custom shader pass
-var vertShader = document.getElementById('vertexShader').textContent;
-var fragShader = document.getElementById('fragmentShader').textContent;
-var counter = 0.0;
-var myEffect = {
-  uniforms: {
-    "tDiffuse": { value: null },
-    "amount": { value: counter }
-  },
-  vertexShader: vertShader,
-  fragmentShader: fragShader
-}
-
-var customPass = new ShaderPass(myEffect);
-customPass.renderToScreen = true;
-compose.addPass(customPass);
-
-
-
-
-
-
-
 
 
 /**
@@ -219,27 +150,6 @@ gui.add(rectLight,'intensity', 0, 6, 0.3)
 const rectLightHelper = new RectAreaLightHelper( rectLight );
 //rectLight.add( rectLightHelper );
  
-/**
- * ADD BACKGROUND
- */
- const textPlane = new THREE.TextureLoader()
- textPlane.load('./img/alphaNoise.jpeg', tex => {
-    tex.magFilter = THREE.NearestFilter;
-    tex.wrapT = THREE.RepeatWrapping;
-    tex.wrapS = THREE.RepeatWrapping;
-    tex.repeat.set( 60, 60 );
-    const backPlane = new THREE.PlaneGeometry(15,15)
-    const matPlane = new THREE.MeshBasicMaterial({
-        color:'white',
-        alphaMap:tex, 
-        //side: THREE.DoubleSide,
-        transparent: true,
-        opacity:0.02
-    })
-    const meshPlane = new THREE.Mesh(backPlane, matPlane)
-    cameraRig.add(meshPlane)
-})
-
 
 
  /**
@@ -315,9 +225,6 @@ const tick = () => {
     
     const elapsedTime = clock.getDelta()
 
-    counter += 0.000001;
-    customPass.uniforms["amount"].value = counter;
-
     /**
      * 100% part
      */
@@ -342,10 +249,10 @@ const tick = () => {
 		mixer.update( elapsedTime );
 	}
 
+    //controls.update()
     stats.update()
-    
-    compose.render()
-    //renderer.render(scene, camera)
+        
+    renderer.render(scene, camera)
     requestAnimationFrame(tick)
 }
 tick()
