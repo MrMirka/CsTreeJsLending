@@ -238,16 +238,11 @@ gltfLoaderSol.load('./models/gltf1k/v2/character.gltf', gltf => {
      const backPlane = new THREE.PlaneGeometry(10,4.6)
      const matPlane = new THREE.MeshBasicMaterial({
          map:tex
-         //color:'white',
-         //alphaMap:tex, 
-         //side: THREE.DoubleSide,
-         //transparent: true,
-         //opacity:0.02
      })
      const meshPlane = new THREE.Mesh(backPlane, matPlane)
      gui.add(meshPlane.position,'y', -10, 10, 0.3)
-    gui.add(meshPlane.position,'x', -10, 10, 0.3)
-    gui.add(meshPlane.position,'z', -10, 10, 0.3)
+     gui.add(meshPlane.position,'x', -10, 10, 0.3)
+     gui.add(meshPlane.position,'z', -10, 10, 0.3)
      cameraRig.add(meshPlane)
  })
  

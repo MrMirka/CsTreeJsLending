@@ -9,7 +9,7 @@ body
 {
     overflow: hidden;
    /*  background-color: #131313; */
-     background-image: url('./img/background_v2.png'); 
+   /*   background-image: url('./img/background_v2.png');  */
 }
 
 .webgl
