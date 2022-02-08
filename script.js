@@ -12,14 +12,7 @@ import { RectAreaLightHelper } from './lib/RectAreaLightHelper.js';
 import { EffectComposer } from './three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from './three/examples/jsm/postprocessing/RenderPass.js'
 import { ShaderPass } from './three/examples/jsm/postprocessing/ShaderPass.js'
-import { DotScreenPass } from './three/examples/jsm/postprocessing/DotScreenPass.js'
-import { SepiaShader } from './three/examples/jsm/shaders/SepiaShader.js'
-import { BleachBypassShader } from './three/examples/jsm/shaders/BleachBypassShader.js'
-import { FilmPass } from './three/examples/jsm/postprocessing/FilmPass.js'
-import { GammaCorrectionShader } from './three/examples/jsm/shaders/GammaCorrectionShader.js'
-import { LuminosityShader } from './three/examples/jsm/shaders/LuminosityShader.js';
-
-
+import { RGBShiftShader } from './three/examples/jsm/shaders/RGBShiftShader.js'
 
 
 let mixer, model
@@ -52,10 +45,12 @@ window.addEventListener('mousemove', (event) =>
     cursor.y = ( event.clientY - param.height / 2 ) * 0.0004
 })
 
-const camera = new THREE.PerspectiveCamera(55, param.width / param.height, 0.1 , 1000)
+const camera = new THREE.PerspectiveCamera(55, param.width / param.height, 0.1 , 100)
 camera.position.x = 1
 camera.position.z = 3
 camera.position.y = 1
+
+gui.add(camera,'fov', 10, 100, 0.3)
 
 gui.add(camera.position,'x', -10, 10, 0.3)
 gui.add(camera.position,'y', -10, 10, 0.3)
@@ -78,40 +73,20 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping
 
 
 /**
+ * Orbit
+ */
+//const control = new OrbitControls(camera, renderer.domElement)
+
+
+/**
  * Add compose
  */
 const compose = new EffectComposer(renderer)
 compose.addPass( new RenderPass( scene, camera ) )
 
-
-//Lumin
-//compose.addPass(new ShaderPass(LuminosityShader))
-
-
-//Dots
-const effectDotScreen = new DotScreenPass( new THREE.Vector2( 0, 0 ), 0.5, 0.8 )
-//compose.addPass(effectDotScreen)
-
-//Sepia
-const shaderSepia = SepiaShader
-const effectSepia = new ShaderPass( shaderSepia )
-effectSepia.uniforms[ 'amount' ].value = 0.9
-//compose.addPass(effectSepia)
-
-//Bleach
-const shaderBleach = BleachBypassShader
-const effectBleach = new ShaderPass( shaderBleach )
-effectBleach.uniforms[ 'opacity' ].value = 0.32
-//compose.addPass(effectBleach)
-
-//Gamma correction
-const effectGamma = new ShaderPass( GammaCorrectionShader )
-//compose.addPass(effectGamma)
-
-//Film
-const effectFilm = new FilmPass( 0.35, 0.025, 648, false )
-//compose.addPass(effectFilm)
-
+const grbShaderPass = RGBShiftShader
+const rgbShiftPass = new ShaderPass(grbShaderPass)
+//compose.addPass(rgbShiftPass)
 
 //custom shader pass
 var vertShader = document.getElementById('vertexShader').textContent;
@@ -129,12 +104,6 @@ var myEffect = {
 var customPass = new ShaderPass(myEffect);
 customPass.renderToScreen = true;
 compose.addPass(customPass);
-
-
-
-
-
-
 
 
 
@@ -163,20 +132,21 @@ compose.addPass(customPass);
  */
  const light = new THREE.AmbientLight( 0x404040 ); // soft white light
  light.intensity = 5
- scene.add( light );
+ //scene.add( light );
 
  //Point   
- const pontLight = new THREE.PointLight( 0xD03858, 4 )
- pontLight.position.set(-1.8,.9,-1.2)
- pontLight.decay = 2
+ const pontLight = new THREE.PointLight( 0xff0000, 4 )
+ //const pontLight = new THREE.PointLight( 0xD03858, 4 )
+ pontLight.position.set(-1.8,1.6,-1.2)
+ //pontLight.decay = 2
  
  scene.add( pontLight )
 
  const pontLight1 = new THREE.PointLight( 0xffffff, 2.46 )
  pontLight1.position.set(-2.1,.9,1.5)
- pontLight1.castShadow = true
- pontLight1.distance = 1011
- pontLight1.bias = 222
+ //pontLight1.castShadow = true
+ //pontLight1.distance = 1011
+ //pontLight1.bias = 222
  pontLight1.shadow.mapSize.width = 2048
  pontLight1.shadow.mapSize.height = 2048
  pontLight1.decay = 2
@@ -187,59 +157,40 @@ compose.addPass(customPass);
  gui.add(pontLight.position,'x', -10, 10, 0.3)
  gui.add(pontLight.position,'y', -10, 10, 0.3)
  gui.add(pontLight.position,'z', -10, 10, 0.3)
- gui.add(pontLight,'intensity', 0, 4, 0.01)
+ gui.add(pontLight,'intensity', 0, 8, 0.01)
 
  gui.add(pontLight1.position,'x', -10, 10, 0.3)
  gui.add(pontLight1.position,'y', -10, 10, 0.3)
  gui.add(pontLight1.position,'z', -10, 10, 0.3)
- gui.add(pontLight1,'intensity', 0, 4, 0.01)
+ gui.add(pontLight1,'intensity', 0, 8, 0.01)
 
 
 
 /* const sphereSize = 0.3;
-const pointLightHelper = new THREE.PointLightHelper( pontLight, sphereSize );
+const pointLightHelper = new THREE.PointLightHelper( pontLight, sphereSize, 0xff0000 );
 scene.add( pointLightHelper );
 
-const pointLightHelper1 = new THREE.PointLightHelper( pontLight1, sphereSize );
+const pointLightHelper1 = new THREE.PointLightHelper( pontLight1, sphereSize, 0xff0000 );
 scene.add( pointLightHelper1 ); */
 
 //RECT Ligth
-const width = 4;
-const height = 4;
+const width = 3;
+const height = 3;
 const intensity = 1;
 const rectLight = new THREE.RectAreaLight( 0xffffff, intensity,  width, height );
 rectLight.position.set( 1.2, 4.2, .9 );
-rectLight.lookAt( 0, 3, 0 );
+rectLight.rotation.x = -Math.PI /2 
+//rectLight.lookAt( 0, 3, 0 );
 scene.add( rectLight )
 gui.add(rectLight.position,'x', -10, 10, 0.3)
 gui.add(rectLight.position,'y', -10, 10, 0.3)
 gui.add(rectLight.position,'z', -10, 10, 0.3)
-gui.add(rectLight,'intensity', 0, 6, 0.3)
+gui.add(rectLight.rotation,'x', -Math.PI / 2, Math.PI / 2, 0.01)
+gui.add(rectLight,'intensity', 0, 60, 0.3)
 
-const rectLightHelper = new RectAreaLightHelper( rectLight );
-//rectLight.add( rectLightHelper );
- 
-/**
- * ADD BACKGROUND
- */
- const textPlane = new THREE.TextureLoader()
- textPlane.load('./img/alphaNoise.jpeg', tex => {
-    tex.magFilter = THREE.NearestFilter;
-    tex.wrapT = THREE.RepeatWrapping;
-    tex.wrapS = THREE.RepeatWrapping;
-    tex.repeat.set( 60, 60 );
-    const backPlane = new THREE.PlaneGeometry(15,15)
-    const matPlane = new THREE.MeshBasicMaterial({
-        color:'white',
-        alphaMap:tex, 
-        //side: THREE.DoubleSide,
-        transparent: true,
-        opacity:0.02
-    })
-    const meshPlane = new THREE.Mesh(backPlane, matPlane)
-    cameraRig.add(meshPlane)
-})
-
+/* const rectLightHelper = new RectAreaLightHelper( rectLight );
+rectLight.add( rectLightHelper );
+  */
 
 
  /**
@@ -248,17 +199,20 @@ const rectLightHelper = new RectAreaLightHelper( rectLight );
 const dracoLoader = new DRACOLoader()
 dracoLoader.setDecoderPath('./lib/draco/')
 const gltfLoaderSol = new GLTFLoader()
-gltfLoaderSol.setDRACOLoader(dracoLoader)
-gltfLoaderSol.load('./models/compress_vertion/character.gltf', gltf => {
+//gltfLoaderSol.setDRACOLoader(dracoLoader)
+//gltfLoaderSol.load('./models/compress_vertion/character.gltf', gltf => {
+gltfLoaderSol.load('./models/gltf1k/v2/character.gltf', gltf => {
     model = gltf.scene
     model.scale.set(2.9,2.9,2.9)
     model.position.set(0,-3,0)
-    model.rotation.y = .6
+    model.rotation.y = .9
     cameraRig.add(model)
     cameraRig.add(camera)
     gltf.scene.traverse( function( node ) {
         if(node.material){
             //edit material
+            node.material.roughness = 0.75
+            console.log(node.material)
         }
         if(node.isMesh) {
             node.castShadow = true;
@@ -271,6 +225,32 @@ gltfLoaderSol.load('./models/compress_vertion/character.gltf', gltf => {
     mixer.clipAction(animations[0]).play()
     scene.add(model)
  })
+
+ /**
+ * ADD BACKGROUND
+ */
+  const textPlane = new THREE.TextureLoader()
+  textPlane.load('./img/background_v2.png', tex => {
+     tex.magFilter = THREE.NearestFilter;
+     tex.wrapT = THREE.RepeatWrapping;
+     tex.wrapS = THREE.RepeatWrapping;
+     tex.repeat.set( 1, 1 );
+     const backPlane = new THREE.PlaneGeometry(10,4.6)
+     const matPlane = new THREE.MeshBasicMaterial({
+         map:tex
+         //color:'white',
+         //alphaMap:tex, 
+         //side: THREE.DoubleSide,
+         //transparent: true,
+         //opacity:0.02
+     })
+     const meshPlane = new THREE.Mesh(backPlane, matPlane)
+     gui.add(meshPlane.position,'y', -10, 10, 0.3)
+    gui.add(meshPlane.position,'x', -10, 10, 0.3)
+    gui.add(meshPlane.position,'z', -10, 10, 0.3)
+     cameraRig.add(meshPlane)
+ })
+ 
 
  /**
   * Add text
@@ -311,12 +291,16 @@ let stats = new Stats();
 document.body.appendChild( stats.dom );
 
 const tick = () => {
-    rectLight.lookAt( 0, 3, 0 );
+    //rectLight.lookAt( 0, 3, 0 );
     
     const elapsedTime = clock.getDelta()
 
+
     counter += 0.000001;
     customPass.uniforms["amount"].value = counter;
+
+    
+
 
     /**
      * 100% part
@@ -334,8 +318,12 @@ const tick = () => {
     
    
 
-    cameraRig.rotation.x += ( -cursor.y - cameraRig.rotation.x ) * .05;
-	cameraRig.rotation.y += ( - cursor.x - cameraRig.rotation.y ) * .03;
+   
+    cameraRig.rotation.x += ( -cursor.y * 0.2 - cameraRig.rotation.x ) * .05
+	//cameraRig.rotation.y += ( - cursor.x - cameraRig.rotation.y ) * .03
+	cameraRig.rotation.y += ( - cursor.x * 0.2 - cameraRig.rotation.y ) * .03
+
+    //rgbShiftPass.uniforms["amount"].value = cameraRig.rotation.y * 0.002
     
 
     if(mixer) {
@@ -343,9 +331,11 @@ const tick = () => {
 	}
 
     stats.update()
+    //control.update()
+    camera.updateProjectionMatrix()
     
-    compose.render()
     //renderer.render(scene, camera)
+    compose.render()
     requestAnimationFrame(tick)
 }
 tick()

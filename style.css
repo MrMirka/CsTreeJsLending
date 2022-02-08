@@ -8,7 +8,8 @@ html,
 body
 {
     overflow: hidden;
-    /* background-image: url('./img/ui.png'); */
+   /*  background-color: #131313; */
+     background-image: url('./img/background_v2.png'); 
 }
 
 .webgl
@@ -17,7 +18,7 @@ body
     top: 0;
     left: 0;
     outline: none;
-    z-index: 2;
+   /*  z-index: 2; */
 }
 
 #myCanvas{

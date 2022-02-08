@@ -35,16 +35,16 @@
 
     vec4 color = texture2D( tDiffuse, vUv ) ;
     vec2 uvRandom = vUv ;
-    uvRandom.y *= random(vec2(uvRandom.y,amount * 0.1));
-    color.rgb += random(uvRandom) * 0.15;
+    uvRandom.y *= random(vec2(uvRandom.y,amount ));
+    color.rgb += random(uvRandom) * 0.09;
     gl_FragColor = vec4( color );
   }
 </script>
 
     <canvas class="webgl"></canvas> 
-    <canvas id="myCanvas"></canvas>
+  <!--   <canvas id="myCanvas"></canvas> -->
     <script type = 'module' src = "./script.js"></script> -->
-    <script src = "./smoke.js"></script>
+   <!--  <script src = "./smoke.js"></script> -->
     
 </body>
 </html>
