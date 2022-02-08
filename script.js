@@ -86,7 +86,7 @@ compose.addPass( new RenderPass( scene, camera ) )
 
 const grbShaderPass = RGBShiftShader
 const rgbShiftPass = new ShaderPass(grbShaderPass)
-//compose.addPass(rgbShiftPass)
+compose.addPass(rgbShiftPass)
 
 //custom shader pass
 var vertShader = document.getElementById('vertexShader').textContent;
@@ -240,6 +240,7 @@ gltfLoaderSol.load('./models/gltf1k/v2/character.gltf', gltf => {
          map:tex
      })
      const meshPlane = new THREE.Mesh(backPlane, matPlane)
+     meshPlane.position.set(3.3,1.2,0)
      gui.add(meshPlane.position,'y', -10, 10, 0.3)
      gui.add(meshPlane.position,'x', -10, 10, 0.3)
      gui.add(meshPlane.position,'z', -10, 10, 0.3)
@@ -318,7 +319,7 @@ const tick = () => {
 	//cameraRig.rotation.y += ( - cursor.x - cameraRig.rotation.y ) * .03
 	cameraRig.rotation.y += ( - cursor.x * 0.2 - cameraRig.rotation.y ) * .03
 
-    //rgbShiftPass.uniforms["amount"].value = cameraRig.rotation.y * 0.002
+    rgbShiftPass.uniforms["amount"].value = cameraRig.rotation.y * 0.02
     
 
     if(mixer) {
