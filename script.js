@@ -26,11 +26,28 @@ let points = []
 let pObj
 
 const gui = new dat.GUI()
+const debugObj = {}
 
 const canvas = document.querySelector('canvas.webgl')
 
-
 const scene = new THREE.Scene()
+
+/**
+ * Update AllMaterial
+ */
+ const updateAllmaterial = () => {
+    scene.traverse(child => {
+        if(child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial){
+            child.material.envMapIntensity = debugObj.envMapIntensity
+            child.material.needsUpdate = true
+            child.castShadow = true
+            child.receiveShadow = true
+            child.roughness = 0.75
+        }
+        
+    })
+}
+
 let cameraRig = new THREE.Group()
 scene.add(cameraRig)
 
@@ -50,11 +67,12 @@ camera.position.x = 1
 camera.position.z = 3
 camera.position.y = 1
 
-gui.add(camera,'fov', 10, 100, 0.3)
+gui.add(camera,'fov').min(10).max(100).name('cameraFOV')
 
-gui.add(camera.position,'x', -10, 10, 0.3)
-gui.add(camera.position,'y', -10, 10, 0.3)
-gui.add(camera.position,'z', -10, 10, 0.3)
+gui.add(camera.position,'x').min(-10).max(10).step(0.001).name('cameraX')
+gui.add(camera.position,'y').min(-10).max(10).step(0.001).name('cameraY')
+gui.add(camera.position,'z').min(-10).max(10).step(0.001).name('cameraZ')
+
 scene.add(camera)
 
 const renderer = new THREE.WebGLRenderer({
@@ -63,13 +81,32 @@ const renderer = new THREE.WebGLRenderer({
     alpha: true
 })
 
-
-
 renderer.setSize(param.width, param.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 renderer.shadowMap.enabled = true
+renderer.physicallyCorrectLights = true
+renderer.outputEncoding = THREE.sRGBEncoding
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
 renderer.toneMapping = THREE.ACESFilmicToneMapping
+renderer.toneMappingExposure = 1
+
+gui.add(renderer, 'toneMapping', {
+    No: THREE.NoToneMapping,
+    Linear: THREE.LinearToneMapping,
+    ReinHard: THREE.ReinhardToneMapping,
+    Cineon: THREE.CineonToneMapping,
+    ASECFilmic: THREE.ACESFilmicToneMapping
+}).onFinishChange(()=> {
+    renderer.toneMapping = Number(renderer.toneMapping)
+    //updateAllmaterial()
+})
+gui.add(renderer, 'toneMappingExposure').min(0).max(10).step(0.001).name('toneExposure')
+
+
+
+
+//debugObj.envMapIntensity = 5
+//gui.add(debugObj, 'envMapIntensity').min(0).max(10).step(0.001).onChange(updateAllmaterial)
 
 
 /**
@@ -88,7 +125,7 @@ const grbShaderPass = RGBShiftShader
 const rgbShiftPass = new ShaderPass(grbShaderPass)
 compose.addPass(rgbShiftPass)
 
-//custom shader pass
+//Noise shader
 var vertShader = document.getElementById('vertexShader').textContent;
 var fragShader = document.getElementById('fragmentShader').textContent;
 var counter = 0.0;
@@ -130,39 +167,29 @@ compose.addPass(customPass);
 /**
  * Ligth
  */
- const light = new THREE.AmbientLight( 0x404040 ); // soft white light
- light.intensity = 5
- //scene.add( light );
-
- //Point   
  const pontLight = new THREE.PointLight( 0xff0000, 4 )
- //const pontLight = new THREE.PointLight( 0xD03858, 4 )
  pontLight.position.set(-1.8,1.6,-1.2)
- //pontLight.decay = 2
- 
  scene.add( pontLight )
+ gui.add(pontLight.position,'x').min(-10).max(10).step(0.03).name('lPoint1_X')
+ gui.add(pontLight.position,'y').min(-10).max(10).step(0.03).name('lPoint1_Y')
+ gui.add(pontLight.position,'z').min(-10).max(10).step(0.03).name('lPoint1_Z')
+ gui.add(pontLight,'intensity').min(0).max(20).step(0.001).name('lPoint1_intensity')
 
  const pontLight1 = new THREE.PointLight( 0xffffff, 2.46 )
  pontLight1.position.set(-2.1,.9,1.5)
- //pontLight1.castShadow = true
- //pontLight1.distance = 1011
- //pontLight1.bias = 222
  pontLight1.shadow.mapSize.width = 2048
  pontLight1.shadow.mapSize.height = 2048
- pontLight1.decay = 2
  pontLight1.shadow.mapSize.width = 2048
  pontLight1.shadow.mapSize.height = 2048
  scene.add( pontLight1 )
 
- gui.add(pontLight.position,'x', -10, 10, 0.3)
- gui.add(pontLight.position,'y', -10, 10, 0.3)
- gui.add(pontLight.position,'z', -10, 10, 0.3)
- gui.add(pontLight,'intensity', 0, 8, 0.01)
+ gui.add(pontLight1.position,'x').min(-10).max(10).step(0.03).name('lPoint2_X')
+ gui.add(pontLight1.position,'y').min(-10).max(10).step(0.03).name('lPoint2_Y')
+ gui.add(pontLight1.position,'z').min(-10).max(10).step(0.03).name('lPoint2_Z')
+ gui.add(pontLight1,'intensity').min(0).max(20).step(0.001).name('lPoint2_intensity')
 
- gui.add(pontLight1.position,'x', -10, 10, 0.3)
- gui.add(pontLight1.position,'y', -10, 10, 0.3)
- gui.add(pontLight1.position,'z', -10, 10, 0.3)
- gui.add(pontLight1,'intensity', 0, 8, 0.01)
+
+
 
 
 
@@ -182,11 +209,11 @@ rectLight.position.set( 1.2, 4.2, .9 );
 rectLight.rotation.x = -Math.PI /2 
 //rectLight.lookAt( 0, 3, 0 );
 scene.add( rectLight )
-gui.add(rectLight.position,'x', -10, 10, 0.3)
-gui.add(rectLight.position,'y', -10, 10, 0.3)
-gui.add(rectLight.position,'z', -10, 10, 0.3)
-gui.add(rectLight.rotation,'x', -Math.PI / 2, Math.PI / 2, 0.01)
-gui.add(rectLight,'intensity', 0, 60, 0.3)
+gui.add(rectLight.position,'x').min(-10).max(10).step(0.001).name('rectangleL_X')
+gui.add(rectLight.position,'y').min(-10).max(10).step(0.001).name('rectangleL_Y')
+gui.add(rectLight.position,'z').min(-10).max(10).step(0.001).name('rectangleL_Z')
+gui.add(rectLight.rotation, 'x').min(-Math.PI / 2).max(Math.PI / 2).step(0.001).name('rectangleL_ROT')
+gui.add(rectLight,'intensity').min(0).max(100).step(0.001).name('rectangleL_intensity')
 
 /* const rectLightHelper = new RectAreaLightHelper( rectLight );
 rectLight.add( rectLightHelper );
@@ -206,13 +233,20 @@ gltfLoaderSol.load('./models/gltf1k/v2/character.gltf', gltf => {
     model.scale.set(2.9,2.9,2.9)
     model.position.set(0,-3,0)
     model.rotation.y = .9
-    cameraRig.add(model)
-    cameraRig.add(camera)
+    
     gltf.scene.traverse( function( node ) {
         if(node.material){
-            //edit material
+            const rgbloader = new RGBELoader()
+            rgbloader.load('./textures/enviroment/je_gray_park_2k.pic',texture => {
+                texture.encoding = THREE.sRGBEncoding
+                texture.mapping = THREE.EquirectangularRefractionMapping;
+                texture.wrapS = THREE.RepeatWrapping;
+                texture.wrapP = THREE.RepeatWrapping;
+                texture.repeat.set( 1, 1 );
+                node.material.envMap = texture
+                node.material.envMapIntensity = 0.06
+            })
             node.material.roughness = 0.75
-            console.log(node.material)
         }
         if(node.isMesh) {
             node.castShadow = true;
@@ -220,6 +254,12 @@ gltfLoaderSol.load('./models/gltf1k/v2/character.gltf', gltf => {
         }
     })
 
+    cameraRig.add(model)
+    cameraRig.add(camera)
+
+    
+
+    //Animate RIG
     const animations = gltf.animations;
     mixer = new THREE.AnimationMixer( model );
     mixer.clipAction(animations[0]).play()
@@ -241,9 +281,9 @@ gltfLoaderSol.load('./models/gltf1k/v2/character.gltf', gltf => {
      })
      const meshPlane = new THREE.Mesh(backPlane, matPlane)
      meshPlane.position.set(3.3,1.2,0)
-     gui.add(meshPlane.position,'y', -10, 10, 0.3)
-     gui.add(meshPlane.position,'x', -10, 10, 0.3)
-     gui.add(meshPlane.position,'z', -10, 10, 0.3)
+     gui.add(meshPlane.position,'x').min(-10).max(10).step(0.001).name('back_X')
+     gui.add(meshPlane.position,'y').min(-10).max(10).step(0.001).name('back_Y')
+     gui.add(meshPlane.position,'z').min(-10).max(10).step(0.001).name('back_Z')
      cameraRig.add(meshPlane)
  })
  
@@ -287,10 +327,7 @@ let stats = new Stats();
 document.body.appendChild( stats.dom );
 
 const tick = () => {
-    //rectLight.lookAt( 0, 3, 0 );
-    
     const elapsedTime = clock.getDelta()
-
 
     counter += 0.000001;
     customPass.uniforms["amount"].value = counter;
@@ -316,7 +353,6 @@ const tick = () => {
 
    
     cameraRig.rotation.x += ( -cursor.y * 0.2 - cameraRig.rotation.x ) * .05
-	//cameraRig.rotation.y += ( - cursor.x - cameraRig.rotation.y ) * .03
 	cameraRig.rotation.y += ( - cursor.x * 0.2 - cameraRig.rotation.y ) * .03
 
     rgbShiftPass.uniforms["amount"].value = cameraRig.rotation.y * 0.02
