@@ -37,12 +37,14 @@ const scene = new THREE.Scene()
  */
  const updateAllmaterial = () => {
     scene.traverse(child => {
-        if(child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial){
+        //if(child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial){
+        if(child.material){
+            console.log(child)
             child.material.envMapIntensity = debugObj.envMapIntensity
             child.material.needsUpdate = true
-            child.castShadow = true
-            child.receiveShadow = true
-            child.roughness = 0.75
+            child.material.castShadow = true
+            child.material.receiveShadow = true
+            child.material.roughness = 0.75
         }
         
     })
@@ -264,6 +266,7 @@ gltfLoaderSol.load('./models/gltf1k/v2/character.gltf', gltf => {
     mixer = new THREE.AnimationMixer( model );
     mixer.clipAction(animations[0]).play()
     scene.add(model)
+    updateAllmaterial()
  })
 
  /**
@@ -353,7 +356,8 @@ const tick = () => {
 
    
     cameraRig.rotation.x += ( -cursor.y * 0.2 - cameraRig.rotation.x ) * .05
-	cameraRig.rotation.y += ( - cursor.x * 0.2 - cameraRig.rotation.y ) * .03
+	cameraRig.rotation.y += ( - cursor.x  * 0.2 - cameraRig.rotation.y ) * .03
+	
 
     rgbShiftPass.uniforms["amount"].value = cameraRig.rotation.y * 0.02
     
