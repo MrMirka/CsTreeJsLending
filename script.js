@@ -75,8 +75,8 @@ rgbloader.load(url_3,texture => {
             child.material.needsUpdate = true
             child.material.castShadow = true
             child.material.receiveShadow = true
-            child.material.side = THREE.DoubleSide
-            child.geometry.computeVertexNormals();
+            child.material.shadowSide = THREE.DoubleSide
+            //child.geometry.computeVertexNormals();
         }
         
     })
