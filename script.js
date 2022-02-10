@@ -216,6 +216,8 @@ const lightParameters = {
  gui.add(pontLight.position,'z').min(-10).max(10).step(0.03).name('lPoint1_Z')
  gui.add(pontLight,'intensity').min(0).max(20).step(0.001).name('lPoint1_intensity')
 
+
+
  const pontLight1 = new THREE.PointLight( lightParameters.point2_Color, 20 )
  pontLight1.position.set(0.15,-2.25,0.15)
  pontLight1.shadow.mapSize.width = 2048
@@ -248,6 +250,8 @@ const rectLight = new THREE.RectAreaLight( lightParameters.Rectangle_Color, inte
 rectLight.position.set( -1.153, 4.2, .9 );
 rectLight.rotation.x = -1.6
 //rectLight.lookAt( 0, 3, 0 );
+
+
 scene.add( rectLight )
 gui.addColor(lightParameters, 'Rectangle_Color').onChange(() => {
     rectLight.color.set(lightParameters.Rectangle_Color)
