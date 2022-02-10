@@ -33,18 +33,50 @@ const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 
 /**
+ * Fog
+ */
+const fogParam = {
+    color: 0xd40000,
+    density: 0.115
+}
+const fog = new THREE.FogExp2(fogParam.color, fogParam.density)
+scene.fog = fog
+gui.add(fog, 'density').min(0).max(1).step(0.001).name('FogDensity')
+gui.addColor(fogParam, 'color').onChange(() => {
+    fog.color.set(fogParam.color)
+ })
+
+/**
+ * Enviroment
+ */
+const url_1 = './textures/enviroment/studio_small_09_1k.pic'
+const url_2 = './textures/enviroment/venetian_crossroads_1k.pic'
+const url_3 = './textures/enviroment/colosseum_1k.pic'
+const rgbloader = new RGBELoader()
+rgbloader.load(url_3,texture => {
+     texture.encoding = THREE.sRGBEncoding
+     texture.mapping = THREE.EquirectangularRefractionMapping;
+     texture.wrapS = THREE.RepeatWrapping;
+     texture.wrapP = THREE.RepeatWrapping;
+     texture.repeat.set( 1, 1 );
+     scene.background = texture
+     scene.environment = texture
+ })
+
+ 
+
+/**
  * Update AllMaterial
  */
  const updateAllmaterial = () => {
     scene.traverse(child => {
-        //if(child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial){
-        if(child.material){
-            console.log(child)
+        if(child instanceof THREE.SkinnedMesh && child.material instanceof THREE.MeshStandardMaterial){
             child.material.envMapIntensity = debugObj.envMapIntensity
             child.material.needsUpdate = true
             child.material.castShadow = true
             child.material.receiveShadow = true
-            child.material.roughness = 0.75
+            child.material.side = THREE.DoubleSide
+            child.geometry.computeVertexNormals();
         }
         
     })
@@ -64,13 +96,12 @@ window.addEventListener('mousemove', (event) =>
     cursor.y = ( event.clientY - param.height / 2 ) * 0.0004
 })
 
-const camera = new THREE.PerspectiveCamera(55, param.width / param.height, 0.1 , 100)
-camera.position.x = 1
-camera.position.z = 3
+const camera = new THREE.PerspectiveCamera(45, param.width / param.height, 0.1 , 100)
+camera.position.x = 0.14
+camera.position.z = 3.3
 camera.position.y = 1
 
 gui.add(camera,'fov').min(10).max(100).name('cameraFOV')
-
 gui.add(camera.position,'x').min(-10).max(10).step(0.001).name('cameraX')
 gui.add(camera.position,'y').min(-10).max(10).step(0.001).name('cameraY')
 gui.add(camera.position,'z').min(-10).max(10).step(0.001).name('cameraZ')
@@ -100,15 +131,15 @@ gui.add(renderer, 'toneMapping', {
     ASECFilmic: THREE.ACESFilmicToneMapping
 }).onFinishChange(()=> {
     renderer.toneMapping = Number(renderer.toneMapping)
-    //updateAllmaterial()
+    updateAllmaterial()
 })
 gui.add(renderer, 'toneMappingExposure').min(0).max(10).step(0.001).name('toneExposure')
 
 
 
 
-//debugObj.envMapIntensity = 5
-//gui.add(debugObj, 'envMapIntensity').min(0).max(10).step(0.001).onChange(updateAllmaterial)
+debugObj.envMapIntensity = 0.064
+gui.add(debugObj, 'envMapIntensity').min(0).max(0.5).step(0.0001).onChange(updateAllmaterial)
 
 
 /**
@@ -125,7 +156,7 @@ compose.addPass( new RenderPass( scene, camera ) )
 
 const grbShaderPass = RGBShiftShader
 const rgbShiftPass = new ShaderPass(grbShaderPass)
-compose.addPass(rgbShiftPass)
+//compose.addPass(rgbShiftPass)
 
 //Noise shader
 var vertShader = document.getElementById('vertexShader').textContent;
@@ -169,30 +200,37 @@ compose.addPass(customPass);
 /**
  * Ligth
  */
- const pontLight = new THREE.PointLight( 0xff0000, 4 )
- pontLight.position.set(-1.8,1.6,-1.2)
+const lightParameters = {
+    point1_Color: 0xff0000,
+    point2_Color: 0xff0000,
+    Rectangle_Color: 0xffffff,
+}
+ const pontLight = new THREE.PointLight( lightParameters.point1_Color, 11.231 )
+ pontLight.position.set(-0.93,1.23,0.57)
  scene.add( pontLight )
+ gui.addColor(lightParameters, 'point1_Color').onChange(() => {
+    pontLight.color.set(lightParameters.point1_Color)
+ })
  gui.add(pontLight.position,'x').min(-10).max(10).step(0.03).name('lPoint1_X')
  gui.add(pontLight.position,'y').min(-10).max(10).step(0.03).name('lPoint1_Y')
  gui.add(pontLight.position,'z').min(-10).max(10).step(0.03).name('lPoint1_Z')
  gui.add(pontLight,'intensity').min(0).max(20).step(0.001).name('lPoint1_intensity')
 
- const pontLight1 = new THREE.PointLight( 0xffffff, 2.46 )
- pontLight1.position.set(-2.1,.9,1.5)
+ const pontLight1 = new THREE.PointLight( lightParameters.point2_Color, 20 )
+ pontLight1.position.set(0.15,-2.25,0.15)
  pontLight1.shadow.mapSize.width = 2048
  pontLight1.shadow.mapSize.height = 2048
  pontLight1.shadow.mapSize.width = 2048
  pontLight1.shadow.mapSize.height = 2048
  scene.add( pontLight1 )
 
+ gui.addColor(lightParameters, 'point2_Color').onChange(() => {
+    pontLight1.color.set(lightParameters.point2_Color)
+ })
  gui.add(pontLight1.position,'x').min(-10).max(10).step(0.03).name('lPoint2_X')
  gui.add(pontLight1.position,'y').min(-10).max(10).step(0.03).name('lPoint2_Y')
  gui.add(pontLight1.position,'z').min(-10).max(10).step(0.03).name('lPoint2_Z')
  gui.add(pontLight1,'intensity').min(0).max(20).step(0.001).name('lPoint2_intensity')
-
-
-
-
 
 
 /* const sphereSize = 0.3;
@@ -205,12 +243,15 @@ scene.add( pointLightHelper1 ); */
 //RECT Ligth
 const width = 3;
 const height = 3;
-const intensity = 1;
-const rectLight = new THREE.RectAreaLight( 0xffffff, intensity,  width, height );
-rectLight.position.set( 1.2, 4.2, .9 );
-rectLight.rotation.x = -Math.PI /2 
+const intensity = 11.719;
+const rectLight = new THREE.RectAreaLight( lightParameters.Rectangle_Color, intensity,  width, height );
+rectLight.position.set( -1.153, 4.2, .9 );
+rectLight.rotation.x = -1.6
 //rectLight.lookAt( 0, 3, 0 );
 scene.add( rectLight )
+gui.addColor(lightParameters, 'Rectangle_Color').onChange(() => {
+    rectLight.color.set(lightParameters.Rectangle_Color)
+ })
 gui.add(rectLight.position,'x').min(-10).max(10).step(0.001).name('rectangleL_X')
 gui.add(rectLight.position,'y').min(-10).max(10).step(0.001).name('rectangleL_Y')
 gui.add(rectLight.position,'z').min(-10).max(10).step(0.001).name('rectangleL_Z')
@@ -230,42 +271,20 @@ dracoLoader.setDecoderPath('./lib/draco/')
 const gltfLoaderSol = new GLTFLoader()
 //gltfLoaderSol.setDRACOLoader(dracoLoader)
 //gltfLoaderSol.load('./models/compress_vertion/character.gltf', gltf => {
-gltfLoaderSol.load('./models/gltf1k/v2/character.gltf', gltf => {
+gltfLoaderSol.load('./models/character/character.gltf', gltf => {
     model = gltf.scene
     model.scale.set(2.9,2.9,2.9)
     model.position.set(0,-3,0)
-    model.rotation.y = .9
-    
-    gltf.scene.traverse( function( node ) {
-        if(node.material){
-            const rgbloader = new RGBELoader()
-            rgbloader.load('./textures/enviroment/je_gray_park_2k.pic',texture => {
-                texture.encoding = THREE.sRGBEncoding
-                texture.mapping = THREE.EquirectangularRefractionMapping;
-                texture.wrapS = THREE.RepeatWrapping;
-                texture.wrapP = THREE.RepeatWrapping;
-                texture.repeat.set( 1, 1 );
-                node.material.envMap = texture
-                node.material.envMapIntensity = 0.06
-            })
-            node.material.roughness = 0.75
-        }
-        if(node.isMesh) {
-            node.castShadow = true;
-            node.receiveShadow = true;
-        }
-    })
-
+    model.rotation.y = .6
     cameraRig.add(model)
     cameraRig.add(camera)
-
-    
 
     //Animate RIG
     const animations = gltf.animations;
     mixer = new THREE.AnimationMixer( model );
     mixer.clipAction(animations[0]).play()
     scene.add(model)
+
     updateAllmaterial()
  })
 
@@ -283,7 +302,7 @@ gltfLoaderSol.load('./models/gltf1k/v2/character.gltf', gltf => {
          map:tex
      })
      const meshPlane = new THREE.Mesh(backPlane, matPlane)
-     meshPlane.position.set(3.3,1.2,0)
+     meshPlane.position.set(2,1.2,-0.936)
      gui.add(meshPlane.position,'x').min(-10).max(10).step(0.001).name('back_X')
      gui.add(meshPlane.position,'y').min(-10).max(10).step(0.001).name('back_Y')
      gui.add(meshPlane.position,'z').min(-10).max(10).step(0.001).name('back_Z')
@@ -335,7 +354,6 @@ const tick = () => {
     counter += 0.000001;
     customPass.uniforms["amount"].value = counter;
 
-    
 
 
     /**
@@ -359,12 +377,13 @@ const tick = () => {
 	cameraRig.rotation.y += ( - cursor.x  * 0.2 - cameraRig.rotation.y ) * .03
 	
 
-    rgbShiftPass.uniforms["amount"].value = cameraRig.rotation.y * 0.02
+    //rgbShiftPass.uniforms["amount"].value = cameraRig.rotation.y * 0.02
     
 
     if(mixer) {
 		mixer.update( elapsedTime );
 	}
+
 
     stats.update()
     //control.update()

@@ -1545,9 +1545,9 @@
 			"componentType":5126,
 			"count":843,
 			"type":"SCALAR",
-			"min":[45
+			"min":[52
 			],
-			"max":[45
+			"max":[52
 			]
 		},
 		{
@@ -1715,9 +1715,9 @@
 			"componentType":5126,
 			"count":1355,
 			"type":"SCALAR",
-			"min":[45
+			"min":[52
 			],
-			"max":[45
+			"max":[52
 			]
 		},
 		{
@@ -1885,9 +1885,9 @@
 			"componentType":5126,
 			"count":1321,
 			"type":"SCALAR",
-			"min":[45
+			"min":[52
 			],
-			"max":[45
+			"max":[52
 			]
 		},
 		{
@@ -2055,9 +2055,9 @@
 			"componentType":5126,
 			"count":6542,
 			"type":"SCALAR",
-			"min":[45
+			"min":[52
 			],
-			"max":[45
+			"max":[52
 			]
 		},
 		{
@@ -2225,9 +2225,9 @@
 			"componentType":5126,
 			"count":2918,
 			"type":"SCALAR",
-			"min":[45
+			"min":[52
 			],
-			"max":[45
+			"max":[52
 			]
 		},
 		{
@@ -2395,9 +2395,9 @@
 			"componentType":5126,
 			"count":2416,
 			"type":"SCALAR",
-			"min":[45
+			"min":[52
 			],
-			"max":[45
+			"max":[52
 			]
 		},
 		{
@@ -2565,9 +2565,9 @@
 			"componentType":5126,
 			"count":1896,
 			"type":"SCALAR",
-			"min":[45
+			"min":[52
 			],
-			"max":[45
+			"max":[52
 			]
 		},
 		{
@@ -2585,7 +2585,7 @@
 			"componentType":5126,
 			"count":9986,
 			"type":"VEC3",
-			"min":[-0.42511934,0.899372101,-0.307779789
+			"min":[-0.42511934,0.899372101,-0.307779729
 			],
 			"max":[0.187346876,1.52547896,0.36618939
 			]
@@ -2735,9 +2735,9 @@
 			"componentType":5126,
 			"count":9986,
 			"type":"SCALAR",
-			"min":[45
+			"min":[52
 			],
-			"max":[45
+			"max":[52
 			]
 		},
 		{
@@ -2805,7 +2805,7 @@
 			"componentType":5126,
 			"count":129,
 			"type":"VEC4",
-			"min":[7.75785429e-06,2.27795317e-05,5.54800226e-06,0.000231929749
+			"min":[7.75785429e-06,2.27795317e-05,5.54800317e-06,0.000231929749
 			],
 			"max":[0.123609453,0.945897818,0.976478875,0.981226206
 			]
@@ -2905,9 +2905,9 @@
 			"componentType":5126,
 			"count":129,
 			"type":"SCALAR",
-			"min":[45
+			"min":[52
 			],
-			"max":[45
+			"max":[52
 			]
 		},
 		{
@@ -6173,7 +6173,7 @@
 			}
 		},
 		{
-			"name":"radio",
+			"name":"radio_compress",
 			"pbrMetallicRoughness":{
 				"metallicFactor":0,
 				"roughnessFactor":0.930999994,
@@ -6186,17 +6186,17 @@
 			}
 		},
 		{
-			"name":"glovers",
+			"name":"glovers_compress",
 			"pbrMetallicRoughness":{
 				"metallicFactor":0,
-				"roughnessFactor":0.845000029,
+				"roughnessFactor":0.850000024,
 				"baseColorTexture":{
 					"index":9
 				}
 			}
 		},
 		{
-			"name":"head_vb",
+			"name":"head_vb_compress",
 			"pbrMetallicRoughness":{
 				"metallicFactor":0,
 				"roughnessFactor":0.828000009,
@@ -6209,7 +6209,7 @@
 			}
 		},
 		{
-			"name":"body",
+			"name":"body_compress",
 			"pbrMetallicRoughness":{
 				"metallicFactor":0,
 				"roughnessFactor":0.819999993,
@@ -6310,23 +6310,23 @@
 			"mimeType":"image/png"
 		},
 		{
-			"uri":"w_ct_fbi_glove_baseColor.png",
-			"mimeType":"image/png"
+			"uri":"glove_albedo.jpg",
+			"mimeType":"image/jpeg"
 		},
 		{
-			"uri":"ctm_fbi_v2_head_variantB_baseColor.png",
-			"mimeType":"image/png"
+			"uri":"head_albedo_1k.jpg",
+			"mimeType":"image/jpeg"
 		},
 		{
-			"uri":"ctm_fbi_v2_head_variantB_normal.png",
-			"mimeType":"image/png"
+			"uri":"head_normal_1k.jpg",
+			"mimeType":"image/jpeg"
 		},
 		{
 			"uri":"torso_texture_2k.jpg",
 			"mimeType":"image/jpeg"
 		},
 		{
-			"uri":"ctm_fbi_v2_body_variantB_normal.png",
+			"uri":"torso_normal.png",
 			"mimeType":"image/png"
 		}
 	],
