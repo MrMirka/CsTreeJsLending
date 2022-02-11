@@ -59,7 +59,7 @@ rgbloader.load(url_3,texture => {
      texture.wrapS = THREE.RepeatWrapping;
      texture.wrapP = THREE.RepeatWrapping;
      texture.repeat.set( 1, 1 );
-     scene.background = texture
+     //scene.background = texture
      scene.environment = texture
  })
 
@@ -75,8 +75,9 @@ rgbloader.load(url_3,texture => {
             child.material.needsUpdate = true
             child.material.castShadow = true
             child.material.receiveShadow = true
+            child.receiveShadow = true
+            child.castShadow = true
             child.material.shadowSide = THREE.DoubleSide
-            //child.geometry.computeVertexNormals();
         }
         
     })
@@ -138,7 +139,7 @@ gui.add(renderer, 'toneMappingExposure').min(0).max(10).step(0.001).name('toneEx
 
 
 
-debugObj.envMapIntensity = 0.064
+debugObj.envMapIntensity = 0.0423
 gui.add(debugObj, 'envMapIntensity').min(0).max(0.5).step(0.0001).onChange(updateAllmaterial)
 
 
@@ -202,11 +203,15 @@ compose.addPass(customPass);
  */
 const lightParameters = {
     point1_Color: 0xff0000,
-    point2_Color: 0xff0000,
-    Rectangle_Color: 0xffffff,
+    point2_Color: 0xffffff,
+    point3_Color: 0xffffff,
+    point4_Color: 0xffffff,
+    //Rectangle_Color: 0xffffff,
 }
- const pontLight = new THREE.PointLight( lightParameters.point1_Color, 11.231 )
- pontLight.position.set(-0.93,1.23,0.57)
+ const pontLight = new THREE.PointLight( lightParameters.point1_Color, 30.243 )
+ pontLight.position.set(-1.14,0.81,-0.06)
+ pontLight.distance = 1.565
+ pontLight.decay = 0.914
  scene.add( pontLight )
  gui.addColor(lightParameters, 'point1_Color').onChange(() => {
     pontLight.color.set(lightParameters.point1_Color)
@@ -214,16 +219,14 @@ const lightParameters = {
  gui.add(pontLight.position,'x').min(-10).max(10).step(0.03).name('lPoint1_X')
  gui.add(pontLight.position,'y').min(-10).max(10).step(0.03).name('lPoint1_Y')
  gui.add(pontLight.position,'z').min(-10).max(10).step(0.03).name('lPoint1_Z')
- gui.add(pontLight,'intensity').min(0).max(20).step(0.001).name('lPoint1_intensity')
+ gui.add(pontLight,'intensity').min(0).max(50).step(0.001).name('lPoint1_intensity')
+ gui.add(pontLight,'distance').min(0).max(30).step(0.001).name('lPoint1_distance')
+ gui.add(pontLight,'decay').min(0).max(30).step(0.001).name('lPoint1_decay')
 
 
 
  const pontLight1 = new THREE.PointLight( lightParameters.point2_Color, 20 )
- pontLight1.position.set(0.15,-2.25,0.15)
- pontLight1.shadow.mapSize.width = 2048
- pontLight1.shadow.mapSize.height = 2048
- pontLight1.shadow.mapSize.width = 2048
- pontLight1.shadow.mapSize.height = 2048
+ pontLight1.position.set(-3.75,3.18,4.26)
  scene.add( pontLight1 )
 
  gui.addColor(lightParameters, 'point2_Color').onChange(() => {
@@ -234,6 +237,45 @@ const lightParameters = {
  gui.add(pontLight1.position,'z').min(-10).max(10).step(0.03).name('lPoint2_Z')
  gui.add(pontLight1,'intensity').min(0).max(20).step(0.001).name('lPoint2_intensity')
 
+ const pontLight3 = new THREE.PointLight( lightParameters.point3_Color, 18.825 )
+ pontLight3.position.set(-1.005,2.91,0.3)
+ pontLight3.castShadow = true
+ pontLight3.shadow.mapSize.width = 2048
+ pontLight3.shadow.mapSize.height = 2048
+ pontLight3.shadow.normalBias = 0.05
+ pontLight3.distance = 10.479
+ pontLight3.decay = 1.375
+ scene.add( pontLight3 )
+
+ gui.addColor(lightParameters, 'point3_Color').onChange(() => {
+    pontLight3.color.set(lightParameters.point3_Color)
+ })
+ gui.add(pontLight3.position,'x').min(-20).max(20).step(0.003).name('lPoint3_X')
+ gui.add(pontLight3.position,'y').min(-20).max(20).step(0.003).name('lPoint3_Y')
+ gui.add(pontLight3.position,'z').min(-20).max(20).step(0.003).name('lPoint3_Z')
+ gui.add(pontLight3,'intensity').min(0).max(70).step(0.001).name('lPoint3_intensity')
+ gui.add(pontLight3,'distance').min(0).max(70).step(0.001).name('lPoint3_distance')
+ gui.add(pontLight3,'decay').min(0).max(70).step(0.001).name('lPoint3_decay')
+
+ const pontLight4 = new THREE.PointLight( lightParameters.point2_Color, 20 )
+ pontLight4.position.set(1.02,1.44,-1.38)
+ scene.add( pontLight4 )
+
+ gui.addColor(lightParameters, 'point2_Color').onChange(() => {
+    pontLight4.color.set(lightParameters.point4_Color)
+ })
+ gui.add(pontLight4.position,'x').min(-10).max(10).step(0.03).name('lPoint4_X')
+ gui.add(pontLight4.position,'y').min(-10).max(10).step(0.03).name('lPoint4_Y')
+ gui.add(pontLight4.position,'z').min(-10).max(10).step(0.03).name('lPoint4_Z')
+ gui.add(pontLight4,'intensity').min(0).max(20).step(0.001).name('lPoint2_intensity')
+
+//const sphereSize = 0.3;
+/* const pointLightHelper = new THREE.PointLightHelper( pontLight3, sphereSize, 0xff0000 );
+scene.add( pointLightHelper ); */
+
+/* const cameraHelper = new THREE.CameraHelper(pontLight3.shadow.camera);
+scene.add(cameraHelper);
+ */
 
 /* const sphereSize = 0.3;
 const pointLightHelper = new THREE.PointLightHelper( pontLight, sphereSize, 0xff0000 );
@@ -243,7 +285,7 @@ const pointLightHelper1 = new THREE.PointLightHelper( pontLight1, sphereSize, 0x
 scene.add( pointLightHelper1 ); */
 
 //RECT Ligth
-const width = 3;
+/* const width = 3;
 const height = 3;
 const intensity = 11.719;
 const rectLight = new THREE.RectAreaLight( lightParameters.Rectangle_Color, intensity,  width, height );
@@ -262,9 +304,9 @@ gui.add(rectLight.position,'z').min(-10).max(10).step(0.001).name('rectangleL_Z'
 gui.add(rectLight.rotation, 'x').min(-Math.PI / 2).max(Math.PI / 2).step(0.001).name('rectangleL_ROT')
 gui.add(rectLight,'intensity').min(0).max(100).step(0.001).name('rectangleL_intensity')
 
-/* const rectLightHelper = new RectAreaLightHelper( rectLight );
-rectLight.add( rectLightHelper );
-  */
+const rectLightHelper = new RectAreaLightHelper( rectLight );
+rectLight.add( rectLightHelper ); */
+ 
 
 
  /**
@@ -296,7 +338,7 @@ gltfLoaderSol.load('./models/character/character.gltf', gltf => {
  * ADD BACKGROUND
  */
   const textPlane = new THREE.TextureLoader()
-  textPlane.load('./img/background_v2.png', tex => {
+  textPlane.load('./img/background_v3.png', tex => {
      tex.magFilter = THREE.NearestFilter;
      tex.wrapT = THREE.RepeatWrapping;
      tex.wrapS = THREE.RepeatWrapping;
@@ -310,7 +352,7 @@ gltfLoaderSol.load('./models/character/character.gltf', gltf => {
      gui.add(meshPlane.position,'x').min(-10).max(10).step(0.001).name('back_X')
      gui.add(meshPlane.position,'y').min(-10).max(10).step(0.001).name('back_Y')
      gui.add(meshPlane.position,'z').min(-10).max(10).step(0.001).name('back_Z')
-     cameraRig.add(meshPlane)
+     //cameraRig.add(meshPlane)
  })
  
 

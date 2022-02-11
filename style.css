@@ -9,7 +9,7 @@ body
 {
     overflow: hidden;
    /*  background-color: #131313; */
-   /*   background-image: url('./img/background_v2.png');  */
+     background-image: url('./img/background_v3.png'); 
 }
 
 .webgl
@@ -25,3 +25,17 @@ body
     position:absolute;
     z-index: 1;
 }
+.reg{
+    position:absolute;
+    top: 800px;
+    left: 800px;
+    z-index: 1;
+}
+
+.cap{
+    position:absolute;
+    top: 570px;
+    left: 800px;
+    z-index: 2;
+}
+
