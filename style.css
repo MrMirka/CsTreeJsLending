@@ -26,17 +26,17 @@ body
     position:absolute;
     z-index: 1;
 }
-.reg{
-    position:absolute;
-    top: 800px;
-    left: 800px;
-    z-index: 1;
-}
 
-.cap{
+.title {
+    display: flex;
+    flex-direction: column;
     position:absolute;
-    top: 570px;
-    left: 800px;
-    z-index: 2;
+    bottom: 10%;
+    left: 40%;
+    z-index: 22;
+   
+}
+.cap{
+    margin-bottom: 50px;
 }
 

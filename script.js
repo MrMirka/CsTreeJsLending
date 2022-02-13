@@ -124,6 +124,8 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap
 renderer.toneMapping = THREE.ACESFilmicToneMapping
 renderer.toneMappingExposure = 1
 
+console.log(window.devicePixelRatio)
+
 gui.add(renderer, 'toneMapping', {
     No: THREE.NoToneMapping,
     Linear: THREE.LinearToneMapping,
@@ -195,6 +197,7 @@ compose.addPass(customPass);
      // Update renderer
      renderer.setSize(param.width, param.height)
      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+     //renderer.setPixelRatio(2)
  })
 
 
