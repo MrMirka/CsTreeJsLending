@@ -102,7 +102,7 @@ window.addEventListener('mousemove', (event) =>
 const camera = new THREE.PerspectiveCamera(45, param.width / param.height, 0.1 , 100)
 camera.position.x = 0.14
 camera.position.z = 3.3
-camera.position.y = 1
+camera.position.y = 1.13
 
 let uiCamera = gui.addFolder('Camera')
 uiCamera.add(camera,'fov').min(10).max(100).name('cameraFOV')
@@ -145,7 +145,7 @@ gui.add(renderer, 'toneMappingExposure').min(0).max(10).step(0.001).name('toneEx
 
 
 
-debugObj.envMapIntensity = 0.0321
+debugObj.envMapIntensity = 0.0931
 gui.add(debugObj, 'envMapIntensity').min(0).max(0.5).step(0.0001).onChange(updateAllmaterial)
 
 
@@ -232,10 +232,10 @@ const lightParameters = {
 
 
 
- const pontLight1 = new THREE.PointLight( lightParameters.point2_Color, 9.928 )
- pontLight1.position.set( 0.36, 0.36, 1.71 )
- pontLight1.distance = 4.9195
- pontLight1.dacay = 1
+ const pontLight1 = new THREE.PointLight( lightParameters.point2_Color, 12.254 )
+ pontLight1.position.set( 0.36, 0.81, 1.71 )
+ pontLight1.distance = 2.9258
+ pontLight1.dacay = 1.951
  scene.add( pontLight1 )
 
  gui.addColor(lightParameters, 'point2_Color').onChange(() => {
