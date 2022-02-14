@@ -232,7 +232,7 @@ const lightParameters = {
 
 
 
- const pontLight1 = new THREE.PointLight( lightParameters.point2_Color, 12.254 )
+ const pontLight1 = new THREE.PointLight( lightParameters.point2_Color, 7 )
  pontLight1.position.set( 0.36, 0.81, 1.71 )
  pontLight1.distance = 2.9258
  pontLight1.dacay = 1.951
