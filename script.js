@@ -248,14 +248,14 @@ const lightParameters = {
  gui.add(pontLight1,'distance').min(0).max(30).step(0.0001).name('lPoint2_distance')
  gui.add(pontLight1,'decay').min(0).max(20).step(0.001).name('lPoint2_decay')
 
- const pontLight3 = new THREE.PointLight( lightParameters.point3_Color, 35 )
- pontLight3.position.set(-1,5.61,1.179)
+ const pontLight3 = new THREE.PointLight( lightParameters.point3_Color, 18.475 )
+ pontLight3.position.set(-2.364,3.84,0.294)
  pontLight3.castShadow = true
  pontLight3.shadow.mapSize.width = 2048
  pontLight3.shadow.mapSize.height = 2048
  pontLight3.shadow.normalBias = 0.05
- pontLight3.distance = 6.1
- pontLight3.decay = 0.23
+ pontLight3.distance = 3.725
+ pontLight3.decay = 0
  scene.add( pontLight3 )
 
  gui.addColor(lightParameters, 'point3_Color').onChange(() => {
