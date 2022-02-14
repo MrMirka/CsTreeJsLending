@@ -232,8 +232,8 @@ const lightParameters = {
 
 
 
- const pontLight1 = new THREE.PointLight( lightParameters.point2_Color, 70 )
- pontLight1.position.set(2.82,-3.63,1.26)
+ const pontLight1 = new THREE.PointLight( lightParameters.point2_Color, 4.5 )
+ pontLight1.position.set(-0.51,0.36,1.3)
  pontLight1.distance = 8.9071
  pontLight1.dacay = 0.4
  scene.add( pontLight1 )
