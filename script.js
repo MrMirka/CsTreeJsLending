@@ -41,10 +41,12 @@ const fogParam = {
 }
 const fog = new THREE.FogExp2(fogParam.color, fogParam.density)
 scene.fog = fog
-gui.add(fog, 'density').min(0).max(1).step(0.001).name('FogDensity')
-gui.addColor(fogParam, 'color').onChange(() => {
+let sceneFog = gui.addFolder('FOG2')
+sceneFog.add(fog, 'density').min(0).max(1).step(0.001).name('FogDensity')
+sceneFog.addColor(fogParam, 'color').onChange(() => {
     fog.color.set(fogParam.color)
  })
+ sceneFog.open()
 
 /**
  * Enviroment
@@ -102,10 +104,12 @@ camera.position.x = 0.14
 camera.position.z = 3.3
 camera.position.y = 1
 
-gui.add(camera,'fov').min(10).max(100).name('cameraFOV')
-gui.add(camera.position,'x').min(-10).max(10).step(0.001).name('cameraX')
-gui.add(camera.position,'y').min(-10).max(10).step(0.001).name('cameraY')
-gui.add(camera.position,'z').min(-10).max(10).step(0.001).name('cameraZ')
+let uiCamera = gui.addFolder('Camera')
+uiCamera.add(camera,'fov').min(10).max(100).name('cameraFOV')
+uiCamera.add(camera.position,'x').min(-10).max(10).step(0.001).name('cameraX')
+uiCamera.add(camera.position,'y').min(-10).max(10).step(0.001).name('cameraY')
+uiCamera.add(camera.position,'z').min(-10).max(10).step(0.001).name('cameraZ')
+uiCamera.open()
 
 scene.add(camera)
 
@@ -240,14 +244,14 @@ const lightParameters = {
  gui.add(pontLight1.position,'z').min(-10).max(10).step(0.03).name('lPoint2_Z')
  gui.add(pontLight1,'intensity').min(0).max(20).step(0.001).name('lPoint2_intensity')
 
- const pontLight3 = new THREE.PointLight( lightParameters.point3_Color, 18.825 )
- pontLight3.position.set(-1.005,2.91,0.3)
+ const pontLight3 = new THREE.PointLight( lightParameters.point3_Color, 42.8 )
+ pontLight3.position.set(-1.035,0.3,4.7)
  pontLight3.castShadow = true
  pontLight3.shadow.mapSize.width = 2048
  pontLight3.shadow.mapSize.height = 2048
  pontLight3.shadow.normalBias = 0.05
- pontLight3.distance = 10.479
- pontLight3.decay = 1.375
+ pontLight3.distance = 6.051
+ pontLight3.decay = 0.624
  scene.add( pontLight3 )
 
  gui.addColor(lightParameters, 'point3_Color').onChange(() => {
@@ -260,8 +264,12 @@ const lightParameters = {
  gui.add(pontLight3,'distance').min(0).max(70).step(0.001).name('lPoint3_distance')
  gui.add(pontLight3,'decay').min(0).max(70).step(0.001).name('lPoint3_decay')
 
- const pontLight4 = new THREE.PointLight( lightParameters.point2_Color, 20 )
- pontLight4.position.set(1.02,1.44,-1.38)
+ //const pontLight4 = new THREE.PointLight( lightParameters.point2_Color, 20 )
+ const pontLight4 = new THREE.SpotLight( lightParameters.point2_Color, 20 )
+ pontLight4.position.set(1.,1.4,-1.4)
+ pontLight4.decay = 1
+ pontLight4.angle = 0.8185
+ pontLight4.penumbra = 0.2858
  scene.add( pontLight4 )
 
  gui.addColor(lightParameters, 'point2_Color').onChange(() => {
@@ -270,11 +278,18 @@ const lightParameters = {
  gui.add(pontLight4.position,'x').min(-10).max(10).step(0.03).name('lPoint4_X')
  gui.add(pontLight4.position,'y').min(-10).max(10).step(0.03).name('lPoint4_Y')
  gui.add(pontLight4.position,'z').min(-10).max(10).step(0.03).name('lPoint4_Z')
- gui.add(pontLight4,'intensity').min(0).max(20).step(0.001).name('lPoint2_intensity')
+ gui.add(pontLight4,'intensity').min(0).max(20).step(0.001).name('lPoint4_intensity')
+ gui.add(pontLight4,'distance').min(0).max(20).step(0.001).name('lPoint4_distance')
+ gui.add(pontLight4,'decay').min(0).max(20).step(0.001).name('lPoint4_decay')
+ gui.add(pontLight4,'angle').min(0).max(Math.PI * 0.4).step(0.0001).name('lPoint4_angle')
+ gui.add(pontLight4,'penumbra').min(0).max(1).step(0.0001).name('lPoint4_penumbra')
+
+/* const spotLightHelper = new THREE.SpotLightHelper( pontLight4 );
+scene.add( spotLightHelper ); */
 
 //const sphereSize = 0.3;
 /* const pointLightHelper = new THREE.PointLightHelper( pontLight3, sphereSize, 0xff0000 );
-scene.add( pointLightHelper ); */
+scene.add( pointLightHelper ); 
 
 /* const cameraHelper = new THREE.CameraHelper(pontLight3.shadow.camera);
 scene.add(cameraHelper);
@@ -422,8 +437,8 @@ const tick = () => {
    
 
    
-    cameraRig.rotation.x += ( -cursor.y * 0.2 - cameraRig.rotation.x ) * .05
-	cameraRig.rotation.y += ( - cursor.x  * 0.2 - cameraRig.rotation.y ) * .03
+     cameraRig.rotation.x += ( -cursor.y * 0.2 - cameraRig.rotation.x ) * .05
+	 cameraRig.rotation.y += ( - cursor.x  * 0.2 - cameraRig.rotation.y ) * .03
 	
 
     //rgbShiftPass.uniforms["amount"].value = cameraRig.rotation.y * 0.02
