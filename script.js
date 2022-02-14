@@ -145,7 +145,7 @@ gui.add(renderer, 'toneMappingExposure').min(0).max(10).step(0.001).name('toneEx
 
 
 
-debugObj.envMapIntensity = 0.0423
+debugObj.envMapIntensity = 0.0321
 gui.add(debugObj, 'envMapIntensity').min(0).max(0.5).step(0.0001).onChange(updateAllmaterial)
 
 
@@ -215,7 +215,7 @@ const lightParameters = {
     point4_Color: 0xffffff,
     //Rectangle_Color: 0xffffff,
 }
- const pontLight = new THREE.PointLight( lightParameters.point1_Color, 30.243 )
+ const pontLight = new THREE.PointLight( lightParameters.point1_Color, 28.137 )
  pontLight.position.set(-1.14,0.81,-0.06)
  pontLight.distance = 1.565
  pontLight.decay = 0.914
@@ -232,10 +232,10 @@ const lightParameters = {
 
 
 
- const pontLight1 = new THREE.PointLight( lightParameters.point2_Color, 4.5 )
- pontLight1.position.set(-0.51,0.36,1.3)
- pontLight1.distance = 8.9071
- pontLight1.dacay = 0.4
+ const pontLight1 = new THREE.PointLight( lightParameters.point2_Color, 9.928 )
+ pontLight1.position.set( 0.36, 0.36, 1.71 )
+ pontLight1.distance = 4.9195
+ pontLight1.dacay = 1
  scene.add( pontLight1 )
 
  gui.addColor(lightParameters, 'point2_Color').onChange(() => {
@@ -248,8 +248,8 @@ const lightParameters = {
  gui.add(pontLight1,'distance').min(0).max(30).step(0.0001).name('lPoint2_distance')
  gui.add(pontLight1,'decay').min(0).max(20).step(0.001).name('lPoint2_decay')
 
- const pontLight3 = new THREE.PointLight( lightParameters.point3_Color, 18.475 )
- pontLight3.position.set(-2.364,3.84,0.294)
+ const pontLight3 = new THREE.PointLight( lightParameters.point3_Color, 9.928 )
+ pontLight3.position.set(-1.035,3.84,0.294)
  pontLight3.castShadow = true
  pontLight3.shadow.mapSize.width = 2048
  pontLight3.shadow.mapSize.height = 2048
