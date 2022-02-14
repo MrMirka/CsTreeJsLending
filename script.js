@@ -232,8 +232,10 @@ const lightParameters = {
 
 
 
- const pontLight1 = new THREE.PointLight( lightParameters.point2_Color, 20 )
- pontLight1.position.set(-3.75,3.18,4.26)
+ const pontLight1 = new THREE.PointLight( lightParameters.point2_Color, 70 )
+ pontLight1.position.set(2.82,-3.63,1.26)
+ pontLight1.distance = 8.9071
+ pontLight1.dacay = 0.4
  scene.add( pontLight1 )
 
  gui.addColor(lightParameters, 'point2_Color').onChange(() => {
@@ -242,16 +244,18 @@ const lightParameters = {
  gui.add(pontLight1.position,'x').min(-10).max(10).step(0.03).name('lPoint2_X')
  gui.add(pontLight1.position,'y').min(-10).max(10).step(0.03).name('lPoint2_Y')
  gui.add(pontLight1.position,'z').min(-10).max(10).step(0.03).name('lPoint2_Z')
- gui.add(pontLight1,'intensity').min(0).max(20).step(0.001).name('lPoint2_intensity')
+ gui.add(pontLight1,'intensity').min(0).max(70).step(0.001).name('lPoint2_intensity')
+ gui.add(pontLight1,'distance').min(0).max(30).step(0.0001).name('lPoint2_distance')
+ gui.add(pontLight1,'decay').min(0).max(20).step(0.001).name('lPoint2_decay')
 
- const pontLight3 = new THREE.PointLight( lightParameters.point3_Color, 42.8 )
- pontLight3.position.set(-1.035,0.3,4.7)
+ const pontLight3 = new THREE.PointLight( lightParameters.point3_Color, 35 )
+ pontLight3.position.set(-1,5.61,1.179)
  pontLight3.castShadow = true
  pontLight3.shadow.mapSize.width = 2048
  pontLight3.shadow.mapSize.height = 2048
  pontLight3.shadow.normalBias = 0.05
- pontLight3.distance = 6.051
- pontLight3.decay = 0.624
+ pontLight3.distance = 6.1
+ pontLight3.decay = 0.23
  scene.add( pontLight3 )
 
  gui.addColor(lightParameters, 'point3_Color').onChange(() => {
