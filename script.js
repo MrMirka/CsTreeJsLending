@@ -59,14 +59,14 @@ sceneFog.addColor(fogParam, 'color').onChange(() => {
  /**
   * Smoke
   */
-//const smokeTexture = new THREE.TextureLoader().load('./img/smoke.png')
-const smokeTexture = new THREE.TextureLoader().load('./img/smokeAlpha.jpg')
+const smokeTexture = new THREE.TextureLoader().load('./img/smoke.png')
+//const smokeTexture = new THREE.TextureLoader().load('./img/smokeAlpha.jpg')
 
 const smokeGeo = new THREE.PlaneGeometry(4,4)
 const smokeMat = new THREE.MeshBasicMaterial({
     color: 0xCABABA,
-    //map:smokeTexture,
-    alphaMap: smokeTexture,
+    map:smokeTexture,
+    //alphaMap: smokeTexture,
     transparent: true,
 })
 smokeMat.depthWrite = false
@@ -210,7 +210,7 @@ customPass.renderToScreen = true;
 //compose.addPass(customPass);
 
 //Filmic
-let filmPass = new FilmPass(0.3, 0.0025, 1648, false)
+let filmPass = new FilmPass(0.22, 0.0025, 1648, false)
 compose.addPass(filmPass)
 
 
