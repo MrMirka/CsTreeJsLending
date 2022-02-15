@@ -122,7 +122,7 @@ function init() {
         }
         for(var i=0; i < sparksCount; ++i){
             var particle = new Particle(context);
-            
+            particle.draw()
             particle.setPosition(generateRandom(0, canvasWidth), generateRandom(0, canvasHeight));
             
             particle.setVelocity(generateRandom(-maxVelocity, maxVelocity), generateRandom(-maxVelocity, maxVelocity));

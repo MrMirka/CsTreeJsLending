@@ -12,6 +12,7 @@ import { RectAreaLightHelper } from './lib/RectAreaLightHelper.js';
 import { EffectComposer } from './three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from './three/examples/jsm/postprocessing/RenderPass.js'
 import { ShaderPass } from './three/examples/jsm/postprocessing/ShaderPass.js'
+import { FilmPass } from './three/examples/jsm/postprocessing/FilmPass.js'
 import { RGBShiftShader } from './three/examples/jsm/shaders/RGBShiftShader.js'
 
 
@@ -20,6 +21,13 @@ let mixer, model
 const cursor = {
     x: 0,
     y: 0
+}
+
+const smoke = {
+    particles: [],
+    particleCount: 30,
+    velocity: 0.005,
+    FPS: 33
 }
 
 let points = []
@@ -48,6 +56,24 @@ sceneFog.addColor(fogParam, 'color').onChange(() => {
  })
  sceneFog.open()
 
+ /**
+  * Smoke
+  */
+//const smokeTexture = new THREE.TextureLoader().load('./img/smoke.png')
+const smokeTexture = new THREE.TextureLoader().load('./img/smokeAlpha.jpg')
+
+const smokeGeo = new THREE.PlaneGeometry(4,4)
+const smokeMat = new THREE.MeshBasicMaterial({
+    color: 0xCABABA,
+    //map:smokeTexture,
+    alphaMap: smokeTexture,
+    transparent: true,
+})
+smokeMat.depthWrite = false
+//smokeMat.blending = THREE.AdditiveBlending
+//smokeMat.blending = THREE.AdditiveAnimationBlendMode
+
+
 /**
  * Enviroment
  */
@@ -61,7 +87,6 @@ rgbloader.load(url_3,texture => {
      texture.wrapS = THREE.RepeatWrapping;
      texture.wrapP = THREE.RepeatWrapping;
      texture.repeat.set( 1, 1 );
-     //scene.background = texture
      scene.environment = texture
  })
 
@@ -90,7 +115,9 @@ scene.add(cameraRig)
 
 const param = {
     width: window.innerWidth,
-    height: window.innerHeight
+    height: window.innerHeight,
+    smokeWidth: 6,
+    smokeHeight: 3
 }
 
 window.addEventListener('mousemove', (event) =>
@@ -127,8 +154,8 @@ renderer.outputEncoding = THREE.sRGBEncoding
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
 renderer.toneMapping = THREE.ACESFilmicToneMapping
 renderer.toneMappingExposure = 1
+renderer.logarithmicDepthBuffer = true
 
-console.log(window.devicePixelRatio)
 
 gui.add(renderer, 'toneMapping', {
     No: THREE.NoToneMapping,
@@ -180,7 +207,11 @@ var myEffect = {
 
 var customPass = new ShaderPass(myEffect);
 customPass.renderToScreen = true;
-compose.addPass(customPass);
+//compose.addPass(customPass);
+
+//Filmic
+let filmPass = new FilmPass(0.3, 0.0025, 1648, false)
+compose.addPass(filmPass)
 
 
 
@@ -416,12 +447,13 @@ const clock = new THREE.Clock()
 let stats = new Stats();
 document.body.appendChild( stats.dom );
 
+initSmoke()
+
 const tick = () => {
     const elapsedTime = clock.getDelta()
 
     counter += 0.000001;
     customPass.uniforms["amount"].value = counter;
-
 
 
     /**
@@ -452,16 +484,105 @@ const tick = () => {
 		mixer.update( elapsedTime );
 	}
 
+    update()
 
     stats.update()
     //control.update()
     camera.updateProjectionMatrix()
     
     //renderer.render(scene, camera)
-    compose.render()
+    compose.render(elapsedTime)
     requestAnimationFrame(tick)
 }
 tick()
+
+/**
+ * Particle
+ */
+ function Particle(geo, mat) {
+
+    this.x = 0;
+    this.y = 0;
+    this.sprite = new THREE.Mesh(geo, mat)
+
+    this.xVelocity = 0;
+    this.yVelocity = 0;
+
+    this.radius = 51;
+
+    this.draw = function(){
+        let sprite
+        //scene.add(this.sprite)
+        cameraRig.add(this.sprite)
+    }
+
+
+    this.update = function() {
+        this.x += this.xVelocity;
+        this.y += this.yVelocity;
+        
+
+        if (this.x >= param.smokeWidth) {
+            this.xVelocity = -this.xVelocity;
+            this.x = param.smokeWidth;
+        }
+        else if (this.x <= 0) {
+            this.xVelocity = -this.xVelocity;
+            this.x = 0;
+        }
+
+        if (this.y >= param.smokeHeight) {
+            this.yVelocity = -this.yVelocity;
+            this.y = param.smokeHeight;
+        }
+        
+        else if (this.y <= -0.5) {
+            this.yVelocity = -this.yVelocity;
+            this.y = -0.5;
+        }
+        
+        this.sprite.position.set(this.x - param.smokeWidth / 2,this.y)
+        this.sprite.rotation.z += 0.001
+    };
+
+    this.setPosition = function(x, y) {
+        this.x = x
+        this.y = y
+        this.sprite.position.set(x,y,-2 + Math.random() * 0.001)
+        
+    };
+
+    this.setVelocity = function(x, y) {
+        this.xVelocity = x;
+        this.yVelocity = y;
+    };
+}
+
+
+function generateRandom(min, max){
+    return Math.random() * (max - min) + min;
+    //return Math.random() - 0.5;
+}
+
+function update() {
+    
+    smoke.particles.forEach(function(particle) {
+        particle.update();
+    });
+}
+
+function initSmoke(){
+    for(var i=0; i < smoke.particleCount; ++i){
+        var particle = new Particle(smokeGeo, smokeMat);
+        particle.draw()
+        console.log(generateRandom(-smoke.velocity, smoke.velocity ))
+        particle.setPosition(generateRandom(-param.smokeWidth  , param.smokeWidth  ),
+        generateRandom(0, param.smokeHeight))
+        
+        particle.setVelocity(generateRandom(-smoke.velocity, smoke.velocity ), generateRandom(-smoke.velocity, smoke.velocity))
+        smoke.particles.push(particle);            
+    }
+}
 
 
 
