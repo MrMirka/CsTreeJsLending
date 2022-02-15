@@ -26,7 +26,7 @@ const cursor = {
 const smoke = {
     particles: [],
     particleCount: 30,
-    velocity: 0.005,
+    velocity: 0.003,
     FPS: 33
 }
 
@@ -59,12 +59,12 @@ sceneFog.addColor(fogParam, 'color').onChange(() => {
  /**
   * Smoke
   */
-const smokeTexture = new THREE.TextureLoader().load('./img/smoke.png')
+const smokeTexture = new THREE.TextureLoader().load('./img/smoke2.png')
 //const smokeTexture = new THREE.TextureLoader().load('./img/smokeAlpha.jpg')
 
-const smokeGeo = new THREE.PlaneGeometry(4,4)
+const smokeGeo = new THREE.PlaneGeometry(3,3)
 const smokeMat = new THREE.MeshBasicMaterial({
-    color: 0xCABABA,
+    //color: 0xCABABA,
     map:smokeTexture,
     //alphaMap: smokeTexture,
     transparent: true,
@@ -542,7 +542,7 @@ tick()
         }
         
         this.sprite.position.set(this.x - param.smokeWidth / 2,this.y)
-        this.sprite.rotation.z += 0.001
+        //this.sprite.rotation.z += 0.001
     };
 
     this.setPosition = function(x, y) {
