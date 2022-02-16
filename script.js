@@ -62,14 +62,14 @@ sceneFog.addColor(fogParam, 'color').onChange(() => {
 const smokeTexture = new THREE.TextureLoader().load('./img/smoke2.png')
 //const smokeTexture = new THREE.TextureLoader().load('./img/smokeAlpha.jpg')
 
-const smokeGeo = new THREE.PlaneGeometry(3,3)
+const smokeGeo = new THREE.PlaneGeometry(5,5)
 const smokeMat = new THREE.MeshBasicMaterial({
     //color: 0xCABABA,
     map:smokeTexture,
     //alphaMap: smokeTexture,
     transparent: true,
 })
-smokeMat.depthWrite = false
+smokeMat.depthWrite = true
 //smokeMat.blending = THREE.AdditiveBlending
 //smokeMat.blending = THREE.AdditiveAnimationBlendMode
 
@@ -126,7 +126,7 @@ window.addEventListener('mousemove', (event) =>
     cursor.y = ( event.clientY - param.height / 2 ) * 0.0004
 })
 
-const camera = new THREE.PerspectiveCamera(45, param.width / param.height, 0.1 , 100)
+const camera = new THREE.PerspectiveCamera(45, param.width / param.height, 0.001 , 100)
 camera.position.x = 0.14
 camera.position.z = 3.3
 camera.position.y = 1.13
@@ -472,9 +472,9 @@ const tick = () => {
     
    
 
-   
+   /* 
      cameraRig.rotation.x += ( -cursor.y * 0.2 - cameraRig.rotation.x ) * .05
-	 cameraRig.rotation.y += ( - cursor.x  * 0.2 - cameraRig.rotation.y ) * .03
+	 cameraRig.rotation.y += ( - cursor.x  * 0.2 - cameraRig.rotation.y ) * .03 */
 	
 
     //rgbShiftPass.uniforms["amount"].value = cameraRig.rotation.y * 0.02
@@ -545,10 +545,10 @@ tick()
         //this.sprite.rotation.z += 0.001
     };
 
-    this.setPosition = function(x, y) {
+    this.setPosition = function(x, y, z) {
         this.x = x
         this.y = y
-        this.sprite.position.set(x,y,-2 + Math.random() * 0.001)
+        this.sprite.position.set(x,y,z + Math.random() * 2.001)
         
     };
 
@@ -573,11 +573,16 @@ function update() {
 
 function initSmoke(){
     for(var i=0; i < smoke.particleCount; ++i){
+        let z
+        if(i < 10) {
+            z = 1
+        } else {
+            z = -2
+        }
         var particle = new Particle(smokeGeo, smokeMat);
         particle.draw()
-        console.log(generateRandom(-smoke.velocity, smoke.velocity ))
         particle.setPosition(generateRandom(-param.smokeWidth  , param.smokeWidth  ),
-        generateRandom(0, param.smokeHeight))
+        generateRandom(0, param.smokeHeight),z)
         
         particle.setVelocity(generateRandom(-smoke.velocity, smoke.velocity ), generateRandom(-smoke.velocity, smoke.velocity))
         smoke.particles.push(particle);            
