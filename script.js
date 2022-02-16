@@ -25,7 +25,7 @@ const cursor = {
 
 const smoke = {
     particles: [],
-    particleCount: 30,
+    particleCount: 14,
     velocity: 0.003,
     FPS: 33
 }
@@ -62,7 +62,7 @@ sceneFog.addColor(fogParam, 'color').onChange(() => {
 const smokeTexture = new THREE.TextureLoader().load('./img/smoke2.png')
 //const smokeTexture = new THREE.TextureLoader().load('./img/smokeAlpha.jpg')
 
-const smokeGeo = new THREE.PlaneGeometry(5,5)
+const smokeGeo = new THREE.PlaneGeometry(4,4)
 const smokeMat = new THREE.MeshBasicMaterial({
     //color: 0xCABABA,
     map:smokeTexture,
@@ -116,8 +116,8 @@ scene.add(cameraRig)
 const param = {
     width: window.innerWidth,
     height: window.innerHeight,
-    smokeWidth: 6,
-    smokeHeight: 3
+    smokeWidth: 1.5,
+    smokeHeight: 2
 }
 
 window.addEventListener('mousemove', (event) =>
@@ -472,9 +472,9 @@ const tick = () => {
     
    
 
-   /* 
+   
      cameraRig.rotation.x += ( -cursor.y * 0.2 - cameraRig.rotation.x ) * .05
-	 cameraRig.rotation.y += ( - cursor.x  * 0.2 - cameraRig.rotation.y ) * .03 */
+	 cameraRig.rotation.y += ( - cursor.x  * 0.2 - cameraRig.rotation.y ) * .03
 	
 
     //rgbShiftPass.uniforms["amount"].value = cameraRig.rotation.y * 0.02
@@ -573,12 +573,13 @@ function update() {
 
 function initSmoke(){
     for(var i=0; i < smoke.particleCount; ++i){
-        let z
-        if(i < 10) {
+        let z = -2
+
+      /*   if(i < 10) {
             z = 1
         } else {
             z = -2
-        }
+        } */
         var particle = new Particle(smokeGeo, smokeMat);
         particle.draw()
         particle.setPosition(generateRandom(-param.smokeWidth  , param.smokeWidth  ),
