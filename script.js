@@ -33,7 +33,7 @@ const spark = {
     particles: [],
     particleCount: 35,
     velocity: 0.005,
-    width: 10,
+    width: 3,
     height: 3
 }
 
