@@ -209,14 +209,16 @@ void main(  ) {
 		vec2 sparkOffset = (0.5-sparkSize)*sparkGridSize*sparkCircular;
 		vec2 sparkModulus = mod(sparkCoord+sparkOffset,sparkGridSize) - 0.5*vec2(sparkGridSize);
 		float sparkLength = length(sparkModulus);
-		float sparksGray = max(0.0, 1.0 - sparkLength/(sparkSize*sparkGridSize));
-		sparks = sparkLife*sparksGray*vec3(1.0,0.3,0.0);
+		float sparksGray = max(0.0, 0.97 - sparkLength/(sparkSize*sparkGridSize));
+		sparks = sparkLife*sparksGray*vec3(1.0,0.35,0.0);
 	}
 	//
 	
-	float black = 0.8;
-	if(sparks.r <= 0.37) {
+	float black = 1.0;
+	if(sparks.r < 0.53) {
 		black = 0.0;
+	}else {
+		black = 1.0;
 	}
 	gl_FragColor = vec4(sparks, black);
 }
