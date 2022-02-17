@@ -340,7 +340,7 @@ let stats = new Stats();
 document.body.appendChild( stats.dom );
 
 initSmoke()
-initSpark()
+//initSpark()
 
 const tick = () => {
     const elapsedTime = clock.getDelta()
