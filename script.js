@@ -1,19 +1,17 @@
 import * as THREE from './three/build/three.module.js'
 import { OrbitControls } from './three/examples/jsm/controls/OrbitControls.js'
-import { FirstPersonControls} from './three/examples/jsm/controls/FirstPersonControls.js'
 import { GLTFLoader } from './three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from './three/examples/jsm/loaders/DRACOLoader.js'
 import { RGBELoader } from './three/examples/jsm/loaders/RGBELoader.js'
 import Stats  from './three/examples/jsm/libs/stats.module.js'
 import * as dat from './lib/dat.gui.module.js'
-import { RectAreaLightHelper } from './lib/RectAreaLightHelper.js';
 
 //Postprocessing
 import { EffectComposer } from './three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from './three/examples/jsm/postprocessing/RenderPass.js'
-import { ShaderPass } from './three/examples/jsm/postprocessing/ShaderPass.js'
 import { FilmPass } from './three/examples/jsm/postprocessing/FilmPass.js'
-import { RGBShiftShader } from './three/examples/jsm/shaders/RGBShiftShader.js'
+import {Particle} from './particle.js'
+
 
 
 let mixer, model
@@ -27,11 +25,23 @@ const smoke = {
     particles: [],
     particleCount: 14,
     velocity: 0.003,
-    FPS: 33
+    width: 1.5,
+    height: 2
 }
 
-let points = []
-let pObj
+const spark = {
+    particles: [],
+    particleCount: 35,
+    velocity: 0.005,
+    width: 10,
+    height: 3
+}
+
+const param = {
+    width: window.innerWidth,
+    height: window.innerHeight,
+}
+
 
 const gui = new dat.GUI()
 const debugObj = {}
@@ -60,18 +70,22 @@ sceneFog.addColor(fogParam, 'color').onChange(() => {
   * Smoke
   */
 const smokeTexture = new THREE.TextureLoader().load('./img/smoke2.png')
-//const smokeTexture = new THREE.TextureLoader().load('./img/smokeAlpha.jpg')
-
 const smokeGeo = new THREE.PlaneGeometry(4,4)
 const smokeMat = new THREE.MeshBasicMaterial({
-    //color: 0xCABABA,
     map:smokeTexture,
-    //alphaMap: smokeTexture,
     transparent: true,
 })
-smokeMat.depthWrite = true
-//smokeMat.blending = THREE.AdditiveBlending
-//smokeMat.blending = THREE.AdditiveAnimationBlendMode
+
+/**
+  * Spark
+  */
+ const sparkTexture = new THREE.TextureLoader().load('./img/spark.png')
+ const sparkGeo = new THREE.PlaneGeometry(0.013,0.013)
+ const sparkMat = new THREE.MeshBasicMaterial({
+     map:sparkTexture,
+     transparent: true,
+ })
+
 
 
 /**
@@ -113,12 +127,6 @@ rgbloader.load(url_3,texture => {
 let cameraRig = new THREE.Group()
 scene.add(cameraRig)
 
-const param = {
-    width: window.innerWidth,
-    height: window.innerHeight,
-    smokeWidth: 1.5,
-    smokeHeight: 2
-}
 
 window.addEventListener('mousemove', (event) =>
 {   
@@ -188,26 +196,6 @@ gui.add(debugObj, 'envMapIntensity').min(0).max(0.5).step(0.0001).onChange(updat
 const compose = new EffectComposer(renderer)
 compose.addPass( new RenderPass( scene, camera ) )
 
-const grbShaderPass = RGBShiftShader
-const rgbShiftPass = new ShaderPass(grbShaderPass)
-//compose.addPass(rgbShiftPass)
-
-//Noise shader
-var vertShader = document.getElementById('vertexShader').textContent;
-var fragShader = document.getElementById('fragmentShader').textContent;
-var counter = 0.0;
-var myEffect = {
-  uniforms: {
-    "tDiffuse": { value: null },
-    "amount": { value: counter }
-  },
-  vertexShader: vertShader,
-  fragmentShader: fragShader
-}
-
-var customPass = new ShaderPass(myEffect);
-customPass.renderToScreen = true;
-//compose.addPass(customPass);
 
 //Filmic
 let filmPass = new FilmPass(0.22, 0.0025, 1648, false)
@@ -232,7 +220,6 @@ compose.addPass(filmPass)
      // Update renderer
      renderer.setSize(param.width, param.height)
      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-     //renderer.setPixelRatio(2)
  })
 
 
@@ -244,7 +231,6 @@ const lightParameters = {
     point2_Color: 0xffffff,
     point3_Color: 0xffffff,
     point4_Color: 0xffffff,
-    //Rectangle_Color: 0xffffff,
 }
  const pontLight = new THREE.PointLight( lightParameters.point1_Color, 28.137 )
  pontLight.position.set(-1.14,0.81,-0.06)
@@ -299,7 +285,6 @@ const lightParameters = {
  gui.add(pontLight3,'distance').min(0).max(70).step(0.001).name('lPoint3_distance')
  gui.add(pontLight3,'decay').min(0).max(70).step(0.001).name('lPoint3_decay')
 
- //const pontLight4 = new THREE.PointLight( lightParameters.point2_Color, 20 )
  const pontLight4 = new THREE.SpotLight( lightParameters.point2_Color, 20 )
  pontLight4.position.set(1.,1.4,-1.4)
  pontLight4.decay = 1
@@ -318,48 +303,6 @@ const lightParameters = {
  gui.add(pontLight4,'decay').min(0).max(20).step(0.001).name('lPoint4_decay')
  gui.add(pontLight4,'angle').min(0).max(Math.PI * 0.4).step(0.0001).name('lPoint4_angle')
  gui.add(pontLight4,'penumbra').min(0).max(1).step(0.0001).name('lPoint4_penumbra')
-
-/* const spotLightHelper = new THREE.SpotLightHelper( pontLight4 );
-scene.add( spotLightHelper ); */
-
-//const sphereSize = 0.3;
-/* const pointLightHelper = new THREE.PointLightHelper( pontLight3, sphereSize, 0xff0000 );
-scene.add( pointLightHelper ); 
-
-/* const cameraHelper = new THREE.CameraHelper(pontLight3.shadow.camera);
-scene.add(cameraHelper);
- */
-
-/* const sphereSize = 0.3;
-const pointLightHelper = new THREE.PointLightHelper( pontLight, sphereSize, 0xff0000 );
-scene.add( pointLightHelper );
-
-const pointLightHelper1 = new THREE.PointLightHelper( pontLight1, sphereSize, 0xff0000 );
-scene.add( pointLightHelper1 ); */
-
-//RECT Ligth
-/* const width = 3;
-const height = 3;
-const intensity = 11.719;
-const rectLight = new THREE.RectAreaLight( lightParameters.Rectangle_Color, intensity,  width, height );
-rectLight.position.set( -1.153, 4.2, .9 );
-rectLight.rotation.x = -1.6
-//rectLight.lookAt( 0, 3, 0 );
-
-
-scene.add( rectLight )
-gui.addColor(lightParameters, 'Rectangle_Color').onChange(() => {
-    rectLight.color.set(lightParameters.Rectangle_Color)
- })
-gui.add(rectLight.position,'x').min(-10).max(10).step(0.001).name('rectangleL_X')
-gui.add(rectLight.position,'y').min(-10).max(10).step(0.001).name('rectangleL_Y')
-gui.add(rectLight.position,'z').min(-10).max(10).step(0.001).name('rectangleL_Z')
-gui.add(rectLight.rotation, 'x').min(-Math.PI / 2).max(Math.PI / 2).step(0.001).name('rectangleL_ROT')
-gui.add(rectLight,'intensity').min(0).max(100).step(0.001).name('rectangleL_intensity')
-
-const rectLightHelper = new RectAreaLightHelper( rectLight );
-rectLight.add( rectLightHelper ); */
- 
 
 
  /**
@@ -387,58 +330,7 @@ gltfLoaderSol.load('./models/character/character.gltf', gltf => {
     updateAllmaterial()
  })
 
- /**
- * ADD BACKGROUND
- */
-  const textPlane = new THREE.TextureLoader()
-  textPlane.load('./img/background_v3.png', tex => {
-     tex.magFilter = THREE.NearestFilter;
-     tex.wrapT = THREE.RepeatWrapping;
-     tex.wrapS = THREE.RepeatWrapping;
-     tex.repeat.set( 1, 1 );
-     const backPlane = new THREE.PlaneGeometry(10,4.6)
-     const matPlane = new THREE.MeshBasicMaterial({
-         map:tex
-     })
-     const meshPlane = new THREE.Mesh(backPlane, matPlane)
-     meshPlane.position.set(2,1.2,-0.936)
-     gui.add(meshPlane.position,'x').min(-10).max(10).step(0.001).name('back_X')
-     gui.add(meshPlane.position,'y').min(-10).max(10).step(0.001).name('back_Y')
-     gui.add(meshPlane.position,'z').min(-10).max(10).step(0.001).name('back_Z')
-     //cameraRig.add(meshPlane)
- })
  
-
- /**
-  * Add text
-  */
- const fontloader = new GLTFLoader()
- fontloader.load('./models/font/font.gltf',gltf => {
-    const text = gltf.scene
-    text.position.set(1,0,-100)
-    text.scale.set(200,200,200)
-    
-    let vector = new THREE.Vector3()
-    gltf.scene.traverse( function( node ) {
-
-        if(node.isMesh) {
-            let position = node.geometry.attributes.position
-            for (let i = 0; i < position.count; i++){
-                vector.fromBufferAttribute(position, i)
-                points.push(vector.clone())
-              }
-        }
-        const pointTexture = new THREE.TextureLoader().load('./img/bb.png')
-        let geo = new THREE.BufferGeometry().setFromPoints(points)
-        let mat = new THREE.PointsMaterial({map: pointTexture, size: 1.5});
-        pObj = new THREE.Points(geo, mat)
-        pObj.scale.set(120,120,120)
-        pObj.position.set(1,0,-120)
-        //cameraRig.add(pObj)
-    })
- })
-
-
 
 renderer.render(scene, camera)
 
@@ -448,43 +340,22 @@ let stats = new Stats();
 document.body.appendChild( stats.dom );
 
 initSmoke()
+initSpark()
 
 const tick = () => {
     const elapsedTime = clock.getDelta()
 
-    counter += 0.000001;
-    customPass.uniforms["amount"].value = counter;
-
-
-    /**
-     * 100% part
-     */
-   /*  if(pObj!=undefined) {
-        const positions = pObj.geometry.attributes.position.array
-        const count = positions.length / 3;
-        for(let i=0; i < count; i++) {
-            let i3 = i * 3
-            const x = pObj.geometry.attributes.position.array[i3]
-            pObj.geometry.attributes.position.array[i3 + 2] =  pObj.geometry.attributes.position.array[i3 + 2] + cursor.x * 0.1 * Math.random()
-        }
-        pObj.geometry.attributes.position.needsUpdate = true; 
-    } */
-    
-   
-
-   
+    //Rotate control
      cameraRig.rotation.x += ( -cursor.y * 0.2 - cameraRig.rotation.x ) * .05
 	 cameraRig.rotation.y += ( - cursor.x  * 0.2 - cameraRig.rotation.y ) * .03
 	
-
-    //rgbShiftPass.uniforms["amount"].value = cameraRig.rotation.y * 0.02
     
 
     if(mixer) {
 		mixer.update( elapsedTime );
 	}
 
-    update()
+    updateParticle()
 
     stats.update()
     //control.update()
@@ -496,99 +367,50 @@ const tick = () => {
 }
 tick()
 
+
 /**
- * Particle
+ * Particles
  */
- function Particle(geo, mat) {
-
-    this.x = 0;
-    this.y = 0;
-    this.sprite = new THREE.Mesh(geo, mat)
-
-    this.xVelocity = 0;
-    this.yVelocity = 0;
-
-    this.radius = 51;
-
-    this.draw = function(){
-        let sprite
-        //scene.add(this.sprite)
-        cameraRig.add(this.sprite)
-    }
-
-
-    this.update = function() {
-        this.x += this.xVelocity;
-        this.y += this.yVelocity;
-        
-
-        if (this.x >= param.smokeWidth) {
-            this.xVelocity = -this.xVelocity;
-            this.x = param.smokeWidth;
-        }
-        else if (this.x <= 0) {
-            this.xVelocity = -this.xVelocity;
-            this.x = 0;
-        }
-
-        if (this.y >= param.smokeHeight) {
-            this.yVelocity = -this.yVelocity;
-            this.y = param.smokeHeight;
-        }
-        
-        else if (this.y <= -0.5) {
-            this.yVelocity = -this.yVelocity;
-            this.y = -0.5;
-        }
-        
-        this.sprite.position.set(this.x - param.smokeWidth / 2,this.y)
-        //this.sprite.rotation.z += 0.001
-    };
-
-    this.setPosition = function(x, y, z) {
-        this.x = x
-        this.y = y
-        this.sprite.position.set(x,y,z + Math.random() * 2.001)
-        
-    };
-
-    this.setVelocity = function(x, y) {
-        this.xVelocity = x;
-        this.yVelocity = y;
-    };
-}
-
-
-function generateRandom(min, max){
-    return Math.random() * (max - min) + min;
-    //return Math.random() - 0.5;
-}
-
-function update() {
-    
-    smoke.particles.forEach(function(particle) {
-        particle.update();
-    });
-}
-
 function initSmoke(){
     for(var i=0; i < smoke.particleCount; ++i){
-        let z = -2
-
-      /*   if(i < 10) {
-            z = 1
-        } else {
-            z = -2
-        } */
-        var particle = new Particle(smokeGeo, smokeMat);
+        var particle = new Particle(smokeGeo, smokeMat,cameraRig,smoke)
         particle.draw()
-        particle.setPosition(generateRandom(-param.smokeWidth  , param.smokeWidth  ),
-        generateRandom(0, param.smokeHeight),z)
+        particle.setPosition(generateRandom(-smoke.width  , smoke.width  ),
+        generateRandom(0, smoke.height),-2)
         
         particle.setVelocity(generateRandom(-smoke.velocity, smoke.velocity ), generateRandom(-smoke.velocity, smoke.velocity))
         smoke.particles.push(particle);            
     }
 }
+
+function initSpark(){
+    for(var i=0; i < spark.particleCount; ++i){
+        var particle = new Particle(sparkGeo, sparkMat, cameraRig, spark)
+        particle.draw()
+        particle.setPosition(generateRandom(-spark.width  , spark.width  ),
+        generateRandom(0, spark.height),-2.5)
+        
+        particle.setVelocity(generateRandom(-spark.velocity, spark.velocity ), generateRandom(-spark.velocity, spark.velocity))
+        spark.particles.push(particle);            
+    }
+}
+
+function generateRandom(min, max){
+    return Math.random() * (max - min) + min;
+}
+
+function updateParticle() {
+    
+    smoke.particles.forEach(function(particle) {
+        particle.update();
+    });
+
+    spark.particles.forEach(function(particle) {
+        particle.update();
+    });
+}
+
+
 
 
 
