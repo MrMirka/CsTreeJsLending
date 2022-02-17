@@ -11,7 +11,8 @@ import { EffectComposer } from './three/examples/jsm/postprocessing/EffectCompos
 import { RenderPass } from './three/examples/jsm/postprocessing/RenderPass.js'
 import { FilmPass } from './three/examples/jsm/postprocessing/FilmPass.js'
 import {Particle} from './particle.js'
-
+import {sparkVertexShader} from './shaders/vertex.js'
+import {sparkFragmentShader} from './shaders/fragment.js'
 
 
 let mixer, model
@@ -79,13 +80,13 @@ const smokeMat = new THREE.MeshBasicMaterial({
 /**
   * Spark
   */
- const sparkTexture = new THREE.TextureLoader().load('./img/spark.png')
+/*  const sparkTexture = new THREE.TextureLoader().load('./img/spark.png')
  const sparkGeo = new THREE.PlaneGeometry(0.013,0.013)
  const sparkMat = new THREE.MeshBasicMaterial({
      map:sparkTexture,
      transparent: true,
  })
-
+ */
 
 
 /**
@@ -330,7 +331,29 @@ gltfLoaderSol.load('./models/character/character.gltf', gltf => {
     updateAllmaterial()
  })
 
- 
+/**
+ * Spark shader
+ */
+const textureBackground = new THREE.TextureLoader().load('./img/background_v4.png')
+const sparkGeo = new THREE.PlaneGeometry( 5, 5 )
+const mMat = new THREE.MeshBasicMaterial({color: 'red'})
+const sparkMat = new THREE.RawShaderMaterial({
+    vertexShader: sparkVertexShader,
+    fragmentShader: sparkFragmentShader,
+    uniforms:
+    {
+        iTime: { value: 0 },
+        u_resolution: {value: new THREE.Vector2(param.width, param.height)},
+        uTexture: { value: textureBackground }
+    },
+    
+    transparent: true
+})
+
+const sparkMesh = new THREE.Mesh(sparkGeo, sparkMat)
+sparkMesh.position.z = -2
+gui.add(sparkMesh.position, 'y').min(-10).max(10).step(0.01).name('spark')
+cameraRig.add(sparkMesh)
 
 renderer.render(scene, camera)
 
@@ -344,6 +367,9 @@ initSmoke()
 
 const tick = () => {
     const elapsedTime = clock.getDelta()
+    const sparkTime = clock.getElapsedTime()
+
+    sparkMat.uniforms.iTime.value = sparkTime
 
     //Rotate control
      cameraRig.rotation.x += ( -cursor.y * 0.2 - cameraRig.rotation.x ) * .05

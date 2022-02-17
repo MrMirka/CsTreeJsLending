@@ -9,8 +9,8 @@ body
 {
     overflow: hidden;
    /*  background-color: #131313; */
-     background-image: url('./img/background_v4.png'); 
-     background-size: cover;
+   background-image: url('./img/background_v4.png'); 
+     background-size: cover;  
 }
 
 .webgl
