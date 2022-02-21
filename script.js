@@ -11,8 +11,7 @@ import { EffectComposer } from './three/examples/jsm/postprocessing/EffectCompos
 import { RenderPass } from './three/examples/jsm/postprocessing/RenderPass.js'
 import { FilmPass } from './three/examples/jsm/postprocessing/FilmPass.js'
 import {Particle} from './particle.js'
-import {sparkVertexShader} from './shaders/vertex.js'
-import {sparkFragmentShader} from './shaders/fragment.js'
+
 
 
 let mixer, model
@@ -77,33 +76,7 @@ const smokeMat = new THREE.MeshBasicMaterial({
     transparent: true,
 })
 
-/**
-  * Spark
-  */
-/*  const sparkTexture = new THREE.TextureLoader().load('./img/spark.png')
- const sparkGeo = new THREE.PlaneGeometry(0.013,0.013)
- const sparkMat = new THREE.MeshBasicMaterial({
-     map:sparkTexture,
-     transparent: true,
- })
- */
 
-
-/**
- * Enviroment
- */
-const url_1 = './textures/enviroment/studio_small_09_1k.pic'
-const url_2 = './textures/enviroment/venetian_crossroads_1k.pic'
-const url_3 = './textures/enviroment/colosseum_1k.pic'
-const rgbloader = new RGBELoader()
-rgbloader.load(url_3,texture => {
-     texture.encoding = THREE.sRGBEncoding
-     texture.mapping = THREE.EquirectangularRefractionMapping;
-     texture.wrapS = THREE.RepeatWrapping;
-     texture.wrapP = THREE.RepeatWrapping;
-     texture.repeat.set( 1, 1 );
-     scene.environment = texture
- })
 
  
 
@@ -137,8 +110,8 @@ window.addEventListener('mousemove', (event) =>
 
 const camera = new THREE.PerspectiveCamera(45, param.width / param.height, 1 , 100)
 camera.position.x = 0.14
-camera.position.z = 3.3
-camera.position.y = 1.13
+camera.position.z = 3.765
+camera.position.y = 1.23
 
 let uiCamera = gui.addFolder('Camera')
 uiCamera.add(camera,'fov').min(10).max(100).name('cameraFOV')
@@ -200,7 +173,6 @@ compose.addPass( new RenderPass( scene, camera ) )
 
 //Filmic
 let filmPass = new FilmPass(0.22, 0.0025, 1648, false)
-//let filmPass = new FilmPass( 0.35, 0.025, 648, false )
 compose.addPass(filmPass)
 
 
@@ -313,9 +285,8 @@ const lightParameters = {
 const dracoLoader = new DRACOLoader()
 dracoLoader.setDecoderPath('./lib/draco/')
 const gltfLoaderSol = new GLTFLoader()
-//gltfLoaderSol.setDRACOLoader(dracoLoader)
-//gltfLoaderSol.load('./models/compress_vertion/character.gltf', gltf => {
-gltfLoaderSol.load('./models/character/character.gltf', gltf => {
+gltfLoaderSol.setDRACOLoader(dracoLoader)
+gltfLoaderSol.load('./models/draco_character/untitled.gltf', gltf => {
     model = gltf.scene
     model.scale.set(2.9,2.9,2.9)
     model.position.set(0,-3,0)
@@ -332,33 +303,24 @@ gltfLoaderSol.load('./models/character/character.gltf', gltf => {
     updateAllmaterial()
  })
 
-/**
- * Spark shader
+ /**
+ * Enviroment
  */
-const textureBackground = new THREE.TextureLoader().load('./img/background_v4.png')
-const sparkGeo = new THREE.PlaneGeometry( 8, 5 )
-const mMat = new THREE.MeshBasicMaterial({color: 'red'})
-const sparkMat = new THREE.RawShaderMaterial({
-    vertexShader: sparkVertexShader,
-    fragmentShader: sparkFragmentShader,
-    uniforms:
-    {
-        iTime: { value: 0 },
-        u_resolution: {value: new THREE.Vector2(param.width, param.height)},
-        uTexture: { value: textureBackground }
-    },
-    
-    transparent: true
-})
+const url = './textures/enviroment/colosseum_1k.pic'
+const rgbloader = new RGBELoader()
+rgbloader.load(url,texture => {
+     texture.encoding = THREE.sRGBEncoding
+     texture.mapping = THREE.EquirectangularRefractionMapping;
+     texture.wrapS = THREE.RepeatWrapping;
+     texture.wrapP = THREE.RepeatWrapping;
+     texture.repeat.set( 1, 1 );
+     scene.environment = texture
+ })
 
-const sparkMesh = new THREE.Mesh(sparkGeo, sparkMat)
-sparkMesh.position.z = -2
-gui.add(sparkMesh.position, 'y').min(-10).max(10).step(0.01).name('spark')
-cameraRig.add(sparkMesh)
+
+
 
 //renderer.render(scene, camera)
-
-
 
 const clock = new THREE.Clock()
 
@@ -369,9 +331,7 @@ initSmoke()
 
 const tick = () => {
     const elapsedTime = clock.getDelta()
-    const sparkTime = clock.getElapsedTime()
 
-    sparkMat.uniforms.iTime.value = sparkTime
 
     //Rotate control
      cameraRig.rotation.x += ( -cursor.y * 0.2 - cameraRig.rotation.x ) * .05
@@ -411,17 +371,6 @@ function initSmoke(){
     }
 }
 
-function initSpark(){
-    for(var i=0; i < spark.particleCount; ++i){
-        var particle = new Particle(sparkGeo, sparkMat, cameraRig, spark)
-        particle.draw()
-        particle.setPosition(generateRandom(-spark.width  , spark.width  ),
-        generateRandom(0, spark.height),-2.5)
-        
-        particle.setVelocity(generateRandom(-spark.velocity, spark.velocity ), generateRandom(-spark.velocity, spark.velocity))
-        spark.particles.push(particle);            
-    }
-}
 
 function generateRandom(min, max){
     return Math.random() * (max - min) + min;
@@ -433,9 +382,6 @@ function updateParticle() {
         particle.update();
     });
 
-    spark.particles.forEach(function(particle) {
-        particle.update();
-    });
 }
 
 
