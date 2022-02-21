@@ -199,8 +199,8 @@ compose.addPass( new RenderPass( scene, camera ) )
 
 
 //Filmic
-//let filmPass = new FilmPass(0.22, 0.0025, 1648, false)
-let filmPass = new FilmPass( 0.35, 0.025, 648, false )
+let filmPass = new FilmPass(0.22, 0.0025, 1648, false)
+//let filmPass = new FilmPass( 0.35, 0.025, 648, false )
 compose.addPass(filmPass)
 
 
