@@ -29,22 +29,12 @@ const smoke = {
     height: 2
 }
 
-const spark = {
-    particles: [],
-    particleCount: 35,
-    velocity: 0.005,
-    width: 3,
-    height: 3
-}
 
 const param = {
     width: window.innerWidth,
     height: window.innerHeight,
 }
 
-
-const gui = new dat.GUI()
-const debugObj = {}
 
 const canvas = document.querySelector('canvas.webgl')
 
@@ -59,12 +49,6 @@ const fogParam = {
 }
 const fog = new THREE.FogExp2(fogParam.color, fogParam.density)
 scene.fog = fog
-let sceneFog = gui.addFolder('FOG2')
-sceneFog.add(fog, 'density').min(0).max(1).step(0.001).name('FogDensity')
-sceneFog.addColor(fogParam, 'color').onChange(() => {
-    fog.color.set(fogParam.color)
- })
- sceneFog.open()
 
  /**
   * Smoke
@@ -86,7 +70,7 @@ const smokeMat = new THREE.MeshBasicMaterial({
  const updateAllmaterial = () => {
     scene.traverse(child => {
         if(child instanceof THREE.SkinnedMesh && child.material instanceof THREE.MeshStandardMaterial){
-            child.material.envMapIntensity = debugObj.envMapIntensity
+            child.material.envMapIntensity = 0.05
             child.material.needsUpdate = true
             child.material.castShadow = true
             child.material.receiveShadow = true
@@ -112,14 +96,6 @@ const camera = new THREE.PerspectiveCamera(45, param.width / param.height, 1 , 1
 camera.position.x = 0.14
 camera.position.z = 3.765
 camera.position.y = 1.23
-
-let uiCamera = gui.addFolder('Camera')
-uiCamera.add(camera,'fov').min(10).max(100).name('cameraFOV')
-uiCamera.add(camera.position,'x').min(-10).max(10).step(0.001).name('cameraX')
-uiCamera.add(camera.position,'y').min(-10).max(10).step(0.001).name('cameraY')
-uiCamera.add(camera.position,'z').min(-10).max(10).step(0.001).name('cameraZ')
-uiCamera.open()
-
 scene.add(camera)
 
 const renderer = new THREE.WebGLRenderer({
@@ -139,23 +115,7 @@ renderer.toneMappingExposure = 1
 renderer.logarithmicDepthBuffer = true
 
 
-gui.add(renderer, 'toneMapping', {
-    No: THREE.NoToneMapping,
-    Linear: THREE.LinearToneMapping,
-    ReinHard: THREE.ReinhardToneMapping,
-    Cineon: THREE.CineonToneMapping,
-    ASECFilmic: THREE.ACESFilmicToneMapping
-}).onFinishChange(()=> {
-    renderer.toneMapping = Number(renderer.toneMapping)
-    updateAllmaterial()
-})
-gui.add(renderer, 'toneMappingExposure').min(0).max(10).step(0.001).name('toneExposure')
 
-
-
-
-debugObj.envMapIntensity = 0.05
-gui.add(debugObj, 'envMapIntensity').min(0).max(0.5).step(0.0001).onChange(updateAllmaterial)
 
 
 /**
@@ -211,16 +171,6 @@ const lightParameters = {
  pontLight.distance = 1.887
  pontLight.decay = 0.91
  scene.add( pontLight )
- gui.addColor(lightParameters, 'point1_Color').onChange(() => {
-    pontLight.color.set(lightParameters.point1_Color)
- })
- gui.add(pontLight.position,'x').min(-10).max(10).step(0.03).name('lPoint1_X')
- gui.add(pontLight.position,'y').min(-10).max(10).step(0.03).name('lPoint1_Y')
- gui.add(pontLight.position,'z').min(-10).max(10).step(0.03).name('lPoint1_Z')
- gui.add(pontLight,'intensity').min(0).max(50).step(0.001).name('lPoint1_intensity')
- gui.add(pontLight,'distance').min(0).max(30).step(0.001).name('lPoint1_distance')
- gui.add(pontLight,'decay').min(0).max(30).step(0.001).name('lPoint1_decay')
-
 
 
  const pontLight1 = new THREE.PointLight( lightParameters.point2_Color, 10.473 )
@@ -229,15 +179,6 @@ const lightParameters = {
  pontLight1.dacay = 1
  scene.add( pontLight1 )
 
- gui.addColor(lightParameters, 'point2_Color').onChange(() => {
-    pontLight1.color.set(lightParameters.point2_Color)
- })
- gui.add(pontLight1.position,'x').min(-10).max(10).step(0.03).name('lPoint2_X')
- gui.add(pontLight1.position,'y').min(-10).max(10).step(0.03).name('lPoint2_Y')
- gui.add(pontLight1.position,'z').min(-10).max(10).step(0.03).name('lPoint2_Z')
- gui.add(pontLight1,'intensity').min(0).max(70).step(0.001).name('lPoint2_intensity')
- gui.add(pontLight1,'distance').min(0).max(30).step(0.0001).name('lPoint2_distance')
- gui.add(pontLight1,'decay').min(0).max(20).step(0.001).name('lPoint2_decay')
 
  const pontLight3 = new THREE.PointLight( lightParameters.point3_Color, 7 )
  pontLight3.position.set(-1.008,3.8,0.29)
@@ -249,15 +190,6 @@ const lightParameters = {
  pontLight3.decay = 0
  scene.add( pontLight3 )
 
- gui.addColor(lightParameters, 'point3_Color').onChange(() => {
-    pontLight3.color.set(lightParameters.point3_Color)
- })
- gui.add(pontLight3.position,'x').min(-20).max(20).step(0.003).name('lPoint3_X')
- gui.add(pontLight3.position,'y').min(-20).max(20).step(0.003).name('lPoint3_Y')
- gui.add(pontLight3.position,'z').min(-20).max(20).step(0.003).name('lPoint3_Z')
- gui.add(pontLight3,'intensity').min(0).max(70).step(0.001).name('lPoint3_intensity')
- gui.add(pontLight3,'distance').min(0).max(70).step(0.001).name('lPoint3_distance')
- gui.add(pontLight3,'decay').min(0).max(70).step(0.001).name('lPoint3_decay')
 
  const pontLight4 = new THREE.SpotLight( lightParameters.point2_Color, 11.88 )
  pontLight4.position.set(2.31,2.52,-3.33)
@@ -266,18 +198,6 @@ const lightParameters = {
  pontLight4.distance = 0
  pontLight4.penumbra = 0.0954
  scene.add( pontLight4 )
-
- gui.addColor(lightParameters, 'point2_Color').onChange(() => {
-    pontLight4.color.set(lightParameters.point4_Color)
- })
- gui.add(pontLight4.position,'x').min(-10).max(10).step(0.03).name('lPoint4_X')
- gui.add(pontLight4.position,'y').min(-10).max(10).step(0.03).name('lPoint4_Y')
- gui.add(pontLight4.position,'z').min(-10).max(10).step(0.03).name('lPoint4_Z')
- gui.add(pontLight4,'intensity').min(0).max(20).step(0.001).name('lPoint4_intensity')
- gui.add(pontLight4,'distance').min(0).max(20).step(0.001).name('lPoint4_distance')
- gui.add(pontLight4,'decay').min(0).max(20).step(0.001).name('lPoint4_decay')
- gui.add(pontLight4,'angle').min(0).max(Math.PI * 0.4).step(0.0001).name('lPoint4_angle')
- gui.add(pontLight4,'penumbra').min(0).max(1).step(0.0001).name('lPoint4_penumbra')
 
 
  /**
