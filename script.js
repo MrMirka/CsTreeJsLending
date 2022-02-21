@@ -135,7 +135,7 @@ window.addEventListener('mousemove', (event) =>
     cursor.y = ( event.clientY - param.height / 2 ) * 0.0004
 })
 
-const camera = new THREE.PerspectiveCamera(45, param.width / param.height, 0.001 , 100)
+const camera = new THREE.PerspectiveCamera(45, param.width / param.height, 1 , 100)
 camera.position.x = 0.14
 camera.position.z = 3.3
 camera.position.y = 1.13
@@ -199,7 +199,8 @@ compose.addPass( new RenderPass( scene, camera ) )
 
 
 //Filmic
-let filmPass = new FilmPass(0.22, 0.0025, 1648, false)
+//let filmPass = new FilmPass(0.22, 0.0025, 1648, false)
+let filmPass = new FilmPass( 0.35, 0.025, 648, false )
 compose.addPass(filmPass)
 
 
@@ -355,7 +356,9 @@ sparkMesh.position.z = -2
 gui.add(sparkMesh.position, 'y').min(-10).max(10).step(0.01).name('spark')
 cameraRig.add(sparkMesh)
 
-renderer.render(scene, camera)
+//renderer.render(scene, camera)
+
+
 
 const clock = new THREE.Clock()
 
@@ -363,7 +366,6 @@ let stats = new Stats();
 document.body.appendChild( stats.dom );
 
 initSmoke()
-//initSpark()
 
 const tick = () => {
     const elapsedTime = clock.getDelta()
@@ -388,7 +390,7 @@ const tick = () => {
     camera.updateProjectionMatrix()
     
     //renderer.render(scene, camera)
-    compose.render(elapsedTime)
+    compose.render()
     requestAnimationFrame(tick)
 }
 tick()
