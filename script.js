@@ -335,7 +335,7 @@ gltfLoaderSol.load('./models/character/character.gltf', gltf => {
  * Spark shader
  */
 const textureBackground = new THREE.TextureLoader().load('./img/background_v4.png')
-const sparkGeo = new THREE.PlaneGeometry( 5, 5 )
+const sparkGeo = new THREE.PlaneGeometry( 8, 5 )
 const mMat = new THREE.MeshBasicMaterial({color: 'red'})
 const sparkMat = new THREE.RawShaderMaterial({
     vertexShader: sparkVertexShader,
@@ -373,7 +373,7 @@ const tick = () => {
 
     //Rotate control
      cameraRig.rotation.x += ( -cursor.y * 0.2 - cameraRig.rotation.x ) * .05
-	 cameraRig.rotation.y += ( - cursor.x  * 0.2 - cameraRig.rotation.y ) * .03
+	 cameraRig.rotation.y += ( - cursor.x  * 0.2 - cameraRig.rotation.y ) * .09
 	
     
 

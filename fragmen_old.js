@@ -35,8 +35,8 @@ vec4 taylorInvSqrt(vec4 r)
 
 float snoise(vec3 v)
 	{ 
-	const vec2	C = vec2(2.6/8.0, 1.0/3.0) ;
-	const vec4	D = vec4(0.6, 3.5, 1.0, 2.0);
+	const vec2	C = vec2(1.0/6.0, 1.0/3.0) ;
+	const vec4	D = vec4(0.0, 0.5, 1.0, 2.0);
 
 // First corner
 	vec3 i	= floor(v + dot(v, C.yyy) );
@@ -153,7 +153,9 @@ vec2 noiseStackUV(vec3 pos,int octaves,float falloff,float diff){
 void main(  ) {
 	float time = iTime;
 	vec2 resolution = u_resolution.xy;
-	
+	//vec2 drag = iMouse.xy;
+	//vec2 offset = iMouse.xy;
+		//
 	float xpart = gl_FragCoord.x/resolution.x;
 	float ypart = gl_FragCoord.y/resolution.y;
 	//
@@ -163,8 +165,7 @@ void main(  ) {
 	float ypartClipped = min(ypartClip,1.0);
 	float ypartClippedn = 1.0-ypartClipped;
 	//
-	//float xfuel = 1.0-abs(2.0*xpart-1.0);
-	float xfuel = pow(0.8-abs(2.0*xpart-1.0),0.5);
+	float xfuel = 1.0-abs(2.0*xpart-1.0);//pow(1.0-abs(2.0*xpart-1.0),0.5);
 	//
 	float timeSpeed = 0.5;
 	float realTime = timeSpeed*time;
@@ -187,8 +188,8 @@ void main(  ) {
 	vec3 fire = 1.5*vec3(f, fff, fff*fff);
 	//
 	// smoke
-	//float smokeNoise = 0.5+snoise(0.4*position+timing*vec3(1.0,1.0,0.2))/2.0;
-	//vec3 smoke = vec3(0.3*pow(xfuel,3.0)*pow(ypart,2.0)*(smokeNoise+0.4*(1.0-noise)));
+	float smokeNoise = 0.5+snoise(0.4*position+timing*vec3(1.0,1.0,0.2))/2.0;
+	vec3 smoke = vec3(0.3*pow(xfuel,3.0)*pow(ypart,2.0)*(smokeNoise+0.4*(1.0-noise)));
 	//
 	// sparks
 	float sparkGridSize = 30.0;
@@ -202,7 +203,7 @@ void main(  ) {
 	vec3 sparks = vec3(0.0);
 	//vec4 sparks = texture2D(uTexture, vUv);
 	if (sparkLife>0.0) {
-		float sparkSize = xfuel*xfuel*sparkRandom*0.28;
+		float sparkSize = xfuel*xfuel*sparkRandom*0.38;
 		float sparkRadians = 999.0*sparkRandom*2.0*PI + 2.0*time;
 		vec2 sparkCircular = vec2(sin(sparkRadians),cos(sparkRadians));
 		vec2 sparkOffset = (0.5-sparkSize)*sparkGridSize*sparkCircular;
