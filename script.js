@@ -55,10 +55,10 @@ scene.fog = fog
  * Loading manager
  */
  const loadManager = new THREE.LoadingManager(()=>{
-    //TODO Hide loader
+    
     window.setTimeout(() => {
-        console.log('all load')
         initSmoke()
+        //TODO Hide loader
     }, 500);
 })
 
