@@ -50,15 +50,25 @@ const fogParam = {
 const fog = new THREE.FogExp2(fogParam.color, fogParam.density)
 scene.fog = fog
 
+
+/**
+ * Loading manager
+ */
+ const loadManager = new THREE.LoadingManager(()=>{
+    //TODO Hide loader
+})
+
+
  /**
   * Smoke
   */
-const smokeTexture = new THREE.TextureLoader().load('./img/smoke2.png')
+const smokeTexture = new THREE.TextureLoader(loadManager).load('./img/smoke2.png')
 const smokeGeo = new THREE.PlaneGeometry(4,4)
 const smokeMat = new THREE.MeshBasicMaterial({
     map:smokeTexture,
     transparent: true,
 })
+
 
 
 
@@ -203,9 +213,9 @@ const lightParameters = {
  /**
   * Model loader - Character model
   */
-const dracoLoader = new DRACOLoader()
+const dracoLoader = new DRACOLoader(loadManager)
 dracoLoader.setDecoderPath('./lib/draco/')
-const gltfLoaderSol = new GLTFLoader()
+const gltfLoaderSol = new GLTFLoader(loadManager)
 gltfLoaderSol.setDRACOLoader(dracoLoader)
 gltfLoaderSol.load('./models/draco_character/untitled.gltf', gltf => {
     model = gltf.scene
@@ -228,7 +238,7 @@ gltfLoaderSol.load('./models/draco_character/untitled.gltf', gltf => {
  * Enviroment
  */
 const url = './textures/enviroment/colosseum_1k.pic'
-const rgbloader = new RGBELoader()
+const rgbloader = new RGBELoader(loadManager)
 rgbloader.load(url,texture => {
      texture.encoding = THREE.sRGBEncoding
      texture.mapping = THREE.EquirectangularRefractionMapping;
