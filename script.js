@@ -56,6 +56,10 @@ scene.fog = fog
  */
  const loadManager = new THREE.LoadingManager(()=>{
     //TODO Hide loader
+    window.setTimeout(() => {
+        console.log('all load')
+        initSmoke()
+    }, 500);
 })
 
 
@@ -258,7 +262,7 @@ const clock = new THREE.Clock()
 let stats = new Stats();
 document.body.appendChild( stats.dom );
 
-initSmoke()
+//initSmoke()
 
 const tick = () => {
     const elapsedTime = clock.getDelta()
