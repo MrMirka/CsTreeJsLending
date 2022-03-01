@@ -66,7 +66,7 @@ scene.fog = fog
  /**
   * Smoke
   */
-const smokeTexture = new THREE.TextureLoader(loadManager).load('./img/smoke2.png')
+const smokeTexture = new THREE.TextureLoader(loadManager).load('./img/smoke.png')
 const smokeGeo = new THREE.PlaneGeometry(4,4)
 const smokeMat = new THREE.MeshBasicMaterial({
     map:smokeTexture,
